@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { conn } from "../../utils/conn";
 import { userModel } from "../../db/models/user.model";
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
   await conn();
   try {
     await userModel.deleteMany({

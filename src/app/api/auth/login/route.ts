@@ -3,7 +3,7 @@ import { conn } from "../../../utils/conn";
 import { userModel } from "@/app/db/models/user.model";
 import bcrypt from "bcrypt";
 import { generateToken } from "@/app/utils/generateToken";
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   await conn();
   try {
     const body: { email: string; password: string } = await req.json();

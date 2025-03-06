@@ -1,7 +1,7 @@
 import { userModel } from "@/app/db/models/user.model";
 import { conn } from "@/app/utils/conn";
 import { NextRequest, NextResponse } from "next/server";
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export const GET = async (req: NextRequest) => {
   await conn();
   try {
     const userId = req.headers.get("userId");

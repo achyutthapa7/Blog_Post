@@ -3,7 +3,7 @@ import { IUser, userModel } from "@/app/db/models/user.model";
 import { sendMail } from "@/app/utils/sendMail";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   await conn();
   try {
     const body: IUser = await req.json();
@@ -45,7 +45,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       value: newUser.email,
     });
     console.log(otp);
-    // await sendMail(newUser.email, "mail sent", otp);
+    await sendMail(newUser.email, "mail sent", otp);
     return response;
   } catch (error) {
     console.log("Error while registration:" + error);
