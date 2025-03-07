@@ -40,7 +40,11 @@ export const POST = async (req: NextRequest) => {
       },
       { status: 201 }
     );
-    response.cookies.set("emailAddress", newUser.email);
+    response.cookies.set("emailAddress", newUser.email, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24,
+    });
 
     sendMail(newUser.email, "mail sent", otp).catch(console.error);
     return response;
