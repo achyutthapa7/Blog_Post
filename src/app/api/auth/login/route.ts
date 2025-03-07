@@ -55,13 +55,8 @@ export const POST = async (req: NextRequest) => {
       },
       { status: 200 }
     );
-    response.cookies.set({
-      name: "authToken",
-      value: generateToken(user._id),
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60, // 7 Days
-    });
+
+    response.cookies.set("authToken", generateToken(user._id));
     return response;
   } catch (error) {
     console.log(error);

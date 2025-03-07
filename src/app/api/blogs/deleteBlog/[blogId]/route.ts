@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const DELETE = async (
   req: NextRequest,
-  { params: { blogId } }: { params: { blogId: string } }
+  { params }: { params: Promise<{ blogId: string }> }
 ) => {
   await conn();
   try {
+    const { blogId } = await params;
     const rootUser = await userModel.findById(req.headers.get("userId"));
     if (!rootUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 export const middleware = async (req: NextRequest) => {
   try {
@@ -11,7 +12,9 @@ export const middleware = async (req: NextRequest) => {
     ) {
       return NextResponse.next();
     }
+
     const token = req.cookies?.get("authToken")?.value;
+
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized access token" },

@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
@@ -6,10 +6,8 @@ export const GET = async () => {
       { message: "Logged out successfully" },
       { status: 200 }
     );
-    response.cookies.set({
-      name: "authToken",
-      value: "",
-    });
+    response.cookies.set("authToken", "true");
+
     return response;
   } catch (error) {
     console.error(error);

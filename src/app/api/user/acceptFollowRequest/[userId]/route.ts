@@ -4,7 +4,7 @@ import { userModel } from "@/app/db/models/user.model";
 
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) => {
   await conn();
   try {

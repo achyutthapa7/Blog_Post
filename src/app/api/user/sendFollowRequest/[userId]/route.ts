@@ -4,7 +4,7 @@ import { conn } from "@/app/utils/conn";
 
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) => {
   await conn();
   try {

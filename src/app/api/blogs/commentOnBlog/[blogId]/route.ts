@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (
   req: NextRequest,
-  { params: { blogId } }: { params: { blogId: string } }
+  { params }: { params: Promise<{ blogId: string }> }
 ) => {
   await conn();
   try {
+    const { blogId } = await params;
     const { commentText } = await req.json();
     const blog = await blogModel.findById(blogId);
     const newComment = new commentModel({
@@ -16,7 +17,6 @@ export const POST = async (
       commentText,
       postedBlogId: blogId,
     });
-    console.log(blogId);
     await newComment.save();
     blog.comments.push(newComment._id);
     await blog.save();

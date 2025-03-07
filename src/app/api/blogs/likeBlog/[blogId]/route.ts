@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (
   req: NextRequest,
-  { params: { blogId } }: { params: { blogId: string } }
+  { params }: { params: Promise<{ blogId: string }> }
 ) => {
   await conn();
   try {
+    const { blogId } = await params;
     const blog = await blogModel.findById(blogId);
     if (blog.likes.includes(req.headers.get("userId"))) {
       return NextResponse.json(
