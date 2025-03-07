@@ -42,7 +42,7 @@ export const POST = async (req: NextRequest) => {
     );
     response.cookies.set("emailAddress", newUser.email);
 
-    await sendMail(newUser.email, "mail sent", otp);
+    sendMail(newUser.email, "mail sent", otp);
     return response;
   } catch (error) {
     console.log("Error while registration:" + error);
