@@ -1,12 +1,15 @@
 import { userModel } from "@/app/db/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import { conn } from "../../../utils/conn";
+import { cookies } from "next/headers";
 export const POST = async (req: NextRequest) => {
   await conn();
   try {
+    const cookie = await cookies();
     const body = await req.json();
     const { verificationCode } = body;
-    const emailAddress = req.cookies?.get("emailAddress")?.value;
+    // const emailAddress = req.cookies?.get("emailAddress")?.value;
+    const emailAddress = cookie.get("emailAddress")?.value;
     if (!emailAddress) {
       return NextResponse.json(
         {

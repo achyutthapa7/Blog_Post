@@ -3,9 +3,11 @@ import { conn } from "../../../utils/conn";
 import { userModel } from "@/app/db/models/user.model";
 import bcrypt from "bcrypt";
 import { generateToken } from "@/app/utils/generateToken";
+import { cookies } from "next/headers";
 export const POST = async (req: NextRequest) => {
   await conn();
   try {
+    const cookie = await cookies();
     const body: { email: string; password: string } = await req.json();
     const { email, password } = body;
     if (!email || !password) {
@@ -43,7 +45,12 @@ export const POST = async (req: NextRequest) => {
         { status: 401 }
       );
     }
-    const response = NextResponse.json(
+    cookie.set("authToken", generateToken(user._id), {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24,
+    });
+    return NextResponse.json(
       {
         message: "Login successful",
         user: {
@@ -56,12 +63,13 @@ export const POST = async (req: NextRequest) => {
       { status: 200 }
     );
 
-    response.cookies.set("authToken", generateToken(user._id), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24,
-    });
-    return response;
+    // response.cookies.set("authToken", generateToken(user._id), {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 60 * 60 * 24,
+    // });
+
+    // return response;
   } catch (error) {
     console.log(error);
   }

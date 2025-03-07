@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-
+import { cookies } from "next/headers";
 export const middleware = async (req: NextRequest) => {
   try {
+    const cookie = await cookies();
     const path = req.nextUrl.pathname;
     if (
       path === "/api/auth/login" ||
@@ -12,8 +13,9 @@ export const middleware = async (req: NextRequest) => {
       return NextResponse.next();
     }
 
-    const token = req.cookies?.get("authToken")?.value;
-
+    // const token = req.cookies?.get("authToken")?.value;
+    const token = cookie.get("authToken")?.value;
+    console.log({ token });
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized access token" },

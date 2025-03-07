@@ -2,10 +2,11 @@ import { conn } from "@/app/utils/conn";
 import { IUser, userModel } from "@/app/db/models/user.model";
 import { sendMail } from "@/app/utils/sendMail";
 import { NextRequest, NextResponse } from "next/server";
-
+import { cookies } from "next/headers";
 export const POST = async (req: NextRequest) => {
   await conn();
   try {
+    const cookie = await cookies();
     const body: IUser = await req.json();
     const { firstName, lastName, email, password } = body;
     const otp = Math.floor(Math.random() * 100000 + 899999);
@@ -34,20 +35,24 @@ export const POST = async (req: NextRequest) => {
       verificationCodeExpiry: Date.now() + 1000 * 60 * 5,
     });
     await newUser.save();
-    const response = NextResponse.json(
+    cookie.set("emailAddress", newUser.email, {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24,
+    });
+    sendMail(newUser.email, "mail sent", otp).catch(console.error);
+    return NextResponse.json(
       {
         message: "User created successfully",
       },
       { status: 201 }
     );
-    response.cookies.set("emailAddress", newUser.email, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24,
-    });
-
-    sendMail(newUser.email, "mail sent", otp).catch(console.error);
-    return response;
+    // response.cookies.set("emailAddress", newUser.email, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 60 * 60 * 24,
+    // });
+    // return response;
   } catch (error) {
     console.log("Error while registration:" + error);
   }
