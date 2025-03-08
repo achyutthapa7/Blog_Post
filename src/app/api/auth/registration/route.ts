@@ -35,6 +35,10 @@ export const POST = async (req: NextRequest) => {
       verificationCodeExpiry: Date.now() + 1000 * 60 * 5,
     });
     await newUser.save();
+    if (newUser.authToken === null) {
+      newUser.authTokenExpiry = null;
+      await newUser.save();
+    }
     cookie.set("emailAddress", newUser.email, {
       httpOnly: true,
       maxAge: 60 * 60 * 24,
