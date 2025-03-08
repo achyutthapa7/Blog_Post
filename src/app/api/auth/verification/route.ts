@@ -8,7 +8,6 @@ export const POST = async (req: NextRequest) => {
     const cookie = await cookies();
     const body = await req.json();
     const { verificationCode } = body;
-    // const emailAddress = req.cookies?.get("emailAddress")?.value;
     const emailAddress = cookie.get("emailAddress")?.value;
     if (!emailAddress) {
       return NextResponse.json(

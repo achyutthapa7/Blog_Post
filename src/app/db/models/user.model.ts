@@ -4,10 +4,12 @@ export interface IUser extends Document {
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
   isVerified: boolean;
   verificationCode: number;
   verificationCodeExpiry: Date;
-  password: string;
+  authToken: string;
+  authTokenExpiry: Date;
   blogs: Types.ObjectId[];
   followers: Types.ObjectId[];
   sentFollowRequest: Types.ObjectId[];
@@ -22,6 +24,8 @@ const userSchema = new mongoose.Schema<IUser>(
     isVerified: { type: Boolean, default: false },
     verificationCode: { type: Number },
     verificationCodeExpiry: { type: Date, default: Date.now() },
+    authToken: { type: String, default: null },
+    authTokenExpiry: { type: Date, default: Date.now() },
     blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
     followers: [
       {

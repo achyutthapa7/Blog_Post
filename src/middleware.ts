@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+
 export const middleware = async (req: NextRequest) => {
   try {
     const cookie = await cookies();
@@ -13,22 +14,17 @@ export const middleware = async (req: NextRequest) => {
       return NextResponse.next();
     }
 
-    // const token = req.cookies?.get("authToken")?.value;
     const token = cookie.get("authToken")?.value;
-    console.log({ token });
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized access token" },
         { status: 401 }
       );
     }
-
     const secret = new TextEncoder().encode(process.env.JWT_SECRET as string);
     const { payload } = await jwtVerify(token, secret);
-
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set("userId", payload.userId as string);
-
     return NextResponse.next({
       request: { headers: requestHeaders },
     });

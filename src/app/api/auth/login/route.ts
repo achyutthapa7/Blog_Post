@@ -45,11 +45,16 @@ export const POST = async (req: NextRequest) => {
         { status: 401 }
       );
     }
-    cookie.set("authToken", generateToken(user._id), {
+    const token = generateToken(user._id);
+    const tokenExpiry = Date.now() + 60 * 1000;
+    user.authToken = token;
+    user.authTokenExpiry = tokenExpiry;
+    await user.save();
+    cookie.set("authToken", token, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24,
     });
+
     return NextResponse.json(
       {
         message: "Login successful",
@@ -62,15 +67,11 @@ export const POST = async (req: NextRequest) => {
       },
       { status: 200 }
     );
-
-    // response.cookies.set("authToken", generateToken(user._id), {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   maxAge: 60 * 60 * 24,
-    // });
-
-    // return response;
   } catch (error) {
     console.log(error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 };
