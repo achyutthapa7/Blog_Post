@@ -10,6 +10,7 @@ export const GET = async (req: NextRequest) => {
     const suggestedUsers = await userModel
       .find({
         _id: { $ne: rootUser._id },
+        isVerified: true,
       })
       .populate({
         path: "blogs",
@@ -34,7 +35,7 @@ export const GET = async (req: NextRequest) => {
         select: "firstName lastName",
       })
       .select(
-        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt -authToken -authTokenExpiry"
+        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt -authToken -authTokenExpiry -isVerified -email"
       )
       .limit(5);
     return NextResponse.json(suggestedUsers);
