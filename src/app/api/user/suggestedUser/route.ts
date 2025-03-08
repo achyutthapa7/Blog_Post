@@ -34,7 +34,7 @@ export const GET = async (req: NextRequest) => {
         select: "firstName lastName",
       })
       .select(
-        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt"
+        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt -authToken -authTokenExpiry"
       )
       .limit(5);
     return NextResponse.json(suggestedUsers);
