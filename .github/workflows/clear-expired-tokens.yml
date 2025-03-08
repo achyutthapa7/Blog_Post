@@ -1,6 +1,9 @@
 name: Clear Expired Tokens
 
 on:
+  push:
+    branches:
+      - save-token
   schedule:
     - cron: "*/1 * * * *" # Runs every 1 minute
   workflow_dispatch: # Allows manual triggering
