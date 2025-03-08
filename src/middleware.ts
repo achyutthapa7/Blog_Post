@@ -9,13 +9,13 @@ export const middleware = async (req: NextRequest) => {
     if (
       path === "/api/auth/login" ||
       path === "/api/auth/registration" ||
-      path === "/api/auth/verification" ||
-      path === "/api/auth/expireToken"
+      path === "/api/auth/verification"
     ) {
       return NextResponse.next();
     }
 
     const token = cookie.get("authToken")?.value;
+
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized access token" },
