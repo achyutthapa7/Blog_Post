@@ -1,0 +1,14 @@
+name: Clear Expired Tokens
+
+on:
+  schedule:
+    - cron: "*/1 * * * *" # Runs every 1 minute1
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  trigger-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make API Request to Clear Tokens
+        run: |
+          curl -X DELETE https://fc24-2400-1a00-b050-e2b8-1915-af80-cae5-22ae.ngrok-free.app
