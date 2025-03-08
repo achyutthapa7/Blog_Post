@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { conn } from "../../utils/conn";
-import { userModel } from "../../db/models/user.model";
+import { conn } from "../../../utils/conn";
+import { userModel } from "../../../db/models/user.model";
 export const DELETE = async () => {
   await conn();
   try {
