@@ -14,5 +14,4 @@ jobs:
     steps:
       - name: Make API Request to Clear Tokens
         run: |
-          curl -X DELETE https://bc11-2400-1a00-b050-e2b8-1915-af80-cae5-22ae.ngrok-free.app/api/auth/expireToken \
-               --cookie "authToken=${{ secrets.AUTH_COOKIE }}"
+          curl -X DELETE https://bc11-2400-1a00-b050-e2b8-1915-af80-cae5-22ae.ngrok-free.app/api/auth/expireToken

@@ -9,7 +9,8 @@ export const middleware = async (req: NextRequest) => {
     if (
       path === "/api/auth/login" ||
       path === "/api/auth/registration" ||
-      path === "/api/auth/verification"
+      path === "/api/auth/verification" ||
+      path === "/api/auth/expireToken"
     ) {
       return NextResponse.next();
     }
