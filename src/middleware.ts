@@ -13,9 +13,7 @@ export const middleware = async (req: NextRequest) => {
       return NextResponse.next();
     }
 
-    // const token = req.cookies?.get("authToken")?.value;
     const token = cookie.get("authToken")?.value;
-    console.log({ token });
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized access token" },

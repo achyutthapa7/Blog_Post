@@ -47,7 +47,6 @@ export const POST = async (req: NextRequest) => {
     }
     cookie.set("authToken", generateToken(user._id), {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24,
     });
     return NextResponse.json(
@@ -62,14 +61,6 @@ export const POST = async (req: NextRequest) => {
       },
       { status: 200 }
     );
-
-    // response.cookies.set("authToken", generateToken(user._id), {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   maxAge: 60 * 60 * 24,
-    // });
-
-    // return response;
   } catch (error) {
     console.log(error);
   }

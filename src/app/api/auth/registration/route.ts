@@ -37,7 +37,6 @@ export const POST = async (req: NextRequest) => {
     await newUser.save();
     cookie.set("emailAddress", newUser.email, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24,
     });
     sendMail(newUser.email, "mail sent", otp).catch(console.error);
@@ -47,12 +46,6 @@ export const POST = async (req: NextRequest) => {
       },
       { status: 201 }
     );
-    // response.cookies.set("emailAddress", newUser.email, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   maxAge: 60 * 60 * 24,
-    // });
-    // return response;
   } catch (error) {
     console.log("Error while registration:" + error);
   }
