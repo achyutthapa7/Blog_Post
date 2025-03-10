@@ -14,7 +14,8 @@ export const DELETE = async (
     if (!rootUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-    await blogModel.findByIdAndDelete(blogId);
+
+    await blogModel.deleteOne({ _id: blogId, userId: rootUser._id });
     rootUser.blogs.pull(blogId);
     await rootUser.save();
     return NextResponse.json(

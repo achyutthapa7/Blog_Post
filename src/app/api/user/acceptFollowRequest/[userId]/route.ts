@@ -34,8 +34,8 @@ export const POST = async (
     }
     if (rootUser.sentFollowRequest.includes(user._id)) {
       return NextResponse.json({
-        message:
-          "you sent the follow request, that's why you cannot accepet yourself",
+        message: "Unauthorized",
+        // "you sent the follow request, that's why you cannot accepet yourself",
       });
     }
     if (rootUser.receivedFollowRequest.includes(user._id)) {

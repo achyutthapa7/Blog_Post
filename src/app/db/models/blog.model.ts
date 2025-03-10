@@ -1,6 +1,6 @@
 import mongoose, { Document, Types } from "mongoose";
 
-interface IPost extends Document {
+export interface IBlog extends Document {
   userId: Types.ObjectId;
   title: string;
   content: string;
@@ -8,7 +8,7 @@ interface IPost extends Document {
   comments: Types.ObjectId[];
 }
 
-const blogSchema = new mongoose.Schema<IPost>(
+const blogSchema = new mongoose.Schema<IBlog>(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,4 +25,4 @@ const blogSchema = new mongoose.Schema<IPost>(
   { timestamps: true }
 );
 export const blogModel =
-  mongoose.models.Blog || mongoose.model<IPost>("Blog", blogSchema);
+  mongoose.models.Blog || mongoose.model<IBlog>("Blog", blogSchema);

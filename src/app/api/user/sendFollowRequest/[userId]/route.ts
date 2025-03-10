@@ -22,14 +22,15 @@ export const POST = async (
     const rootUser = await userModel.findById(rootUserId);
     if (!rootUser) {
       return NextResponse.json(
-        { message: "root user not found" },
+        { message: "User not found" },
         { status: 404 }
       );
     }
     const user = await userModel.findById(userId);
     if (!user) {
-      return NextResponse.json({ message: "user not found" }, { status: 404 });
+      return NextResponse.json({ message: "Receiver not found" }, { status: 404 });
     }
+    
     if (
       rootUser.sentFollowRequest.includes(user._id) &&
       user.receivedFollowRequest.includes(rootUser._id)
