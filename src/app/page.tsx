@@ -1,8 +1,13 @@
 import React from "react";
+import ProtectedRoute from "./ProtectedRoute";
+import Landing from "./components/Landing";
 
 const page = () => {
-  return <div>page</div>;
+  return (
+    <>
+      <Landing />
+    </>
+  );
 };
 
 export default page;
-//li,kumjynhtfdvcs

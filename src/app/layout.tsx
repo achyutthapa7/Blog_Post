@@ -1,11 +1,9 @@
 "use client";
-import { PersistGate } from "redux-persist/integration/react";
 import "./globals.css";
 
 import StoreProvider from "./StoreProvider";
 
 import { ToastContainer } from "react-toastify";
-import { persistor } from "./lib/store";
 
 // export const metadata = {
 //   title: "Create Next App",
@@ -21,10 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <StoreProvider>
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
-
+          {children}
           <ToastContainer />
         </StoreProvider>
       </body>
