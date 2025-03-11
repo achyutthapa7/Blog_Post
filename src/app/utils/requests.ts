@@ -1,5 +1,8 @@
 import axios from "axios";
-
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
+    : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
 export const login = async ({
   email,
   password,
@@ -9,7 +12,7 @@ export const login = async ({
 }) => {
   try {
     const res = await axios.post(
-      "http://localhost:3000/api/auth/login",
+      `${API_URL}/auth/login`,
       {
         email,
         password,
@@ -29,7 +32,7 @@ export const login = async ({
 
 export const logout = async () => {
   try {
-    const res = await axios.get("http://localhost:3000/api/auth/logout", {
+    const res = await axios.get(`${API_URL}/auth/logout`, {
       withCredentials: true,
     });
     return res;

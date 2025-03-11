@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   useEffect(() => {
     dispatch(checkAuthStatus());
-  }, []);
+  }, [dispatch]);
 
   if (loading === "idle" || loading === "pending") {
     return <Loader />;

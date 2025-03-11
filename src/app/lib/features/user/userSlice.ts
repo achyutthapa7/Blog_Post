@@ -6,14 +6,19 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+
 export const checkAuthStatus = createAsyncThunk(
   "user/checkAuthStatus",
   async () => {
+    const API_URL =
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
+        : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
+
     try {
-      const res = await axios.get("http://localhost:3000/api/auth/status", {
+      const res = await axios.get(`${API_URL}/auth/status`, {
         withCredentials: true,
       });
-      console.log("res: ", res.data);
       return res.data;
     } catch (error) {
       console.error("Error while getting authentication status:", error);
