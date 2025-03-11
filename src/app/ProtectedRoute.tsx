@@ -53,7 +53,12 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
       redirect("/home");
     }
   }
-  return <>{children}</>;
+  return (
+    <>
+      {!pathname.startsWith("/login") && <Navbar />}
+      {children}
+    </>
+  );
 };
 
 export default ProtectedRoute;
