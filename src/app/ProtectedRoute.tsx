@@ -6,6 +6,7 @@ import { checkAuthStatus } from "./lib/features/user/userSlice";
 import { redirect, usePathname } from "next/navigation";
 import Loader from "./components/Loader";
 import { v4 as uuidv4 } from "uuid";
+import Navbar from "./components/Navbar";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>();
