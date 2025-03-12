@@ -7,10 +7,9 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest) => {
   await conn();
   try {
+    // userId: { $ne: req.headers.get("userId") },
     const blogs = await blogModel
-      .find<IBlog>({
-        userId: { $ne: req.headers.get("userId") },
-      })
+      .find<IBlog>({})
       .populate({
         path: "userId",
         model: userModel,

@@ -3,11 +3,7 @@ import { users } from "@/dummy/user";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addBlog,
-  commentOnBlog,
-  fetchBlog,
-} from "../lib/features/blog/blogSlice";
+import { fetchBlog } from "../lib/features/blog/blogSlice";
 import { AppDispatch, RootState } from "../lib/store";
 import Loader from "./Loader";
 import { IBlog } from "../db/models/blog.model";
@@ -16,7 +12,8 @@ import {
   HandThumbUpIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-
+import { redirect, useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 const ShowBlogs = () => {
   const { blogs, loading } = useSelector((state: RootState) => state.blog);
 
@@ -25,15 +22,13 @@ const ShowBlogs = () => {
     dispatch(fetchBlog());
   }, [dispatch]);
 
-  console.log("home: ", blogs);
-
   if (loading === "idle" || loading === "pending") {
     return <Loader />;
   }
   return (
     <div className="w-full flex items-center justify-center px-10 flex-col">
-      {blogs.map((blog) => (
-        <BlogPost key={blog._id as string} blog={blog} />
+      {blogs.map((blog, index) => (
+        <BlogPost key={(blog?._id as string) || index} blog={blog} />
       ))}
     </div>
   );
@@ -42,6 +37,8 @@ const ShowBlogs = () => {
 export default ShowBlogs;
 
 const BlogPost = ({ blog }: { blog: IBlog }) => {
+  const uniqueId = uuidv4();
+  const router = useRouter();
   const [isMoreCommentsShown, setIsMoreCommentsShown] = useState(false);
   const showMoreComments = () => {
     setIsMoreCommentsShown(true);
@@ -50,27 +47,33 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     <div className="w-full md:w-3/4 lg:w-1/2 h-auto border border-black/20 rounded-2xl mt-10 p-2 ">
       <div className="px-5">
         <div className="flex flex-col items-start">
-          <p className="text-3xl font-semibold">{blog.title}</p>
+          <p className="text-3xl font-semibold">{blog?.title}</p>
           <p className="text-slate-400 font-extralight text-[0.9rem]">
             {new Date(blog?.createdAt).toLocaleDateString()}
           </p>
         </div>
         <div className="mb-3 mt-2">
-          <p className="font-light text-md tracking-wide">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-            error ea, molestias corrupti obcaecati eum et in repellendus commodi
-            hic beatae explicabo soluta, perferendis molestiae rerum debitis
-            nulla placeat animi.
+          <p className="font-light text-md tracking-wide h-[54.5px] overflow-hidden">
+            {blog?.content}
           </p>
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={() => {
+              console.log("click");
+              router.push(`/blogs/?blogId=${blog._id}`);
+            }}
+          >
+            Read More...
+          </span>
         </div>
         <div className="flex gap-6 mb-2 ">
           <div className="flex gap-2 items-center">
             <HandThumbUpIcon className="h-5 w-5" />
-            <p>{blog.likes?.length}</p>
+            <p>{blog?.likes?.length}</p>
           </div>
           <div className="flex gap-2 items-center">
             <ChatBubbleBottomCenterIcon className="h-5 w-5" />
-            <p>{blog.comments?.length}</p>
+            <p>{blog?.comments?.length}</p>
           </div>
         </div>
       </div>
@@ -86,8 +89,8 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
         </div>
 
         <div className="flex flex-col gap-7">
-          {blog.comments?.map((comment) => (
-            <>
+          {blog?.comments?.map((comment, i) => (
+            <div key={i}>
               <div className="flex gap-2 items-center">
                 <div className="w-[30px] h-[30px] rounded-full bg-amber-400 flex items-center justify-center">
                   U
@@ -105,7 +108,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                   <p className="text-md font-light ml-1">comment text</p>
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </div>
 

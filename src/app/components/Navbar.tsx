@@ -5,9 +5,12 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const Navbar = () => {
+  const uniqueId = uuidv4();
   const [searchBarOpen, setSearchBarOpen] = useState(false);
 
   const handleShowSearchBar = () => {
@@ -18,7 +21,7 @@ const Navbar = () => {
     <>
       <div className="px-5 h-[75px] flex justify-between items-center w-full border-b border-slate-200 sticky top-0 bg-slate-300/20 backdrop-blur-3xl shadow-md z-50">
         <div className="flex gap-2 items-center flex-1">
-          <Link href={"/"}>
+          <Link href={"/home"}>
             <span className="text-2xl font-bold text-slate-800">
               Blog-Sphere
             </span>
@@ -34,7 +37,12 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="hidden sm:block">
+          <div
+            className="hidden sm:block"
+            onClick={() => {
+              redirect(`/write/blog/${uniqueId}/?redirect=${uniqueId}`);
+            }}
+          >
             <span className="font-extralight flex gap-1 items-center cursor-pointer">
               <PencilSquareIcon className="h-6 w-6" /> Write
             </span>

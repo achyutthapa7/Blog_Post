@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "./components/Navbar";
 import "./globals.css";
 
 import StoreProvider from "./StoreProvider";

@@ -8,8 +8,7 @@ const page = () => {
   return (
     <ProtectedRoute>
       <div className=" w-full">
-        {/* <ShowBlogs /> */}
-        <TextEditor />
+        <ShowBlogs />
       </div>
     </ProtectedRoute>
   );

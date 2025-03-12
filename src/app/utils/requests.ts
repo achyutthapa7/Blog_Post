@@ -51,3 +51,41 @@ export const authStatus = async () => {
     console.error("Error while getting authentication status:", error);
   }
 };
+
+export const handleAddBlog = async ({
+  title,
+  content,
+}: {
+  title: string;
+  content: string;
+}) => {
+  try {
+    const res = await axios.post(
+      `${API_URL}/blogs/addBlog`,
+      {
+        title,
+        content,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Error while adding blog:", error);
+  }
+};
+
+export const getBlogById = async (blogId: string) => {
+  try {
+    const res = await axios.get(`${API_URL}/blogs/getBlogById/${blogId}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error while fetching blog:", error);
+  }
+};

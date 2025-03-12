@@ -85,7 +85,7 @@ const Landing = () => {
           )}
         </div>
       </nav>
-       
+
       {/* Hero Section */}
       <div className="flex flex-col items-center justify-center min-h-[80vh] p-6 text-center">
         <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 drop-shadow-lg">
@@ -110,7 +110,7 @@ const Landing = () => {
           ) : (
             <Link href="/home">
               <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg shadow-lg text-lg font-medium transition w-full sm:w-auto">
-                Start Writing
+                Explore{" "}
               </button>
             </Link>
           )}
