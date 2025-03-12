@@ -6,6 +6,8 @@ export interface IBlog extends Document {
   content: string;
   likes: Types.ObjectId[];
   comments: Types.ObjectId[];
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 const blogSchema = new mongoose.Schema<IBlog>(

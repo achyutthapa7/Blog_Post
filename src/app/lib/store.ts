@@ -1,9 +1,10 @@
-import { configureStore, createAsyncThunk } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./features/user/userSlice";
-
+import blogSlice from "./features/blog/blogSlice";
 export const store = configureStore({
   reducer: {
     user: userSlice,
+    blog: blogSlice,
   },
 });
 
