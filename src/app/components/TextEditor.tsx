@@ -9,13 +9,18 @@ import { AppDispatch } from "../lib/store";
 import { addBlog } from "../lib/features/blog/blogSlice";
 import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
+import { Loader } from "./Login";
 
 const TextEditor = () => {
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const handlePublish = async () => {
+    setLoading(true);
     const res = await handleAddBlog({ title, content });
+    setLoading(false);
+
     if (res?.status === 201) {
       toast.success("blog added successfully");
       dispatch(addBlog(res?.data.post));
@@ -56,10 +61,11 @@ const TextEditor = () => {
 
       {/* Publish Button */}
       <button
+        disabled={loading}
         onClick={handlePublish}
         className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
       >
-        Publish
+        {loading ? <Loader /> : "Publish"}
       </button>
     </div>
   );

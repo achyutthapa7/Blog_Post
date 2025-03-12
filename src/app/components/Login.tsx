@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
-const Loader = () => (
+export const Loader = () => (
   <div className="animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"></div>
 );
 
