@@ -44,18 +44,26 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
   const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isMoreCommentsShown, setIsMoreCommentsShown] = useState(false);
   const [comment, setComment] = useState("");
   const [hoveredCommentId, setHoveredCommentId] = useState<string | null>(null);
 
   const handleAddComment = async (blogId: string) => {
+    setIsLoading(true);
+    if (!comment) {
+      toast.error("Please enter a comment.");
+      setIsLoading(false);
+      return;
+    }
     const res = await dispatch(addComment({ blogId, comment })).unwrap();
     if (res) {
       toast.success("Comment added successfully");
       setComment("");
+      setIsLoading(false);
     } else {
       toast.error("Failed to add comment.");
+      setIsLoading(false);
     }
   };
 
@@ -112,10 +120,14 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
             placeholder="Add a comment"
             className="border border-black/15 outline-none p-2 w-full rounded-2xl pl-5 font-light focus:outline-blue-900"
           />
-          <PaperAirplaneIcon
-            className="h-6 w-6 absolute right-3 top-[9px] text-blue-400 cursor-pointer hover:text-blue-500"
-            onClick={() => handleAddComment(blog._id.toString())}
-          />
+          {isLoading ? (
+            <div className="absolute right-3 top-[9px] h-6 w-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+          ) : (
+            <PaperAirplaneIcon
+              className="h-6 w-6 absolute right-3 top-[9px] text-blue-400 cursor-pointer hover:text-blue-500"
+              onClick={() => handleAddComment(blog._id.toString())}
+            />
+          )}
         </div>
 
         {/* Comments List */}
