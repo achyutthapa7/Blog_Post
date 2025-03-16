@@ -5,18 +5,50 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const DELETE = async (
   req: NextRequest,
-  { params }: { params: Promise<{ commentId: string; blogId: string }> }
+  { params }: { params: { commentId: string; blogId: string } }
 ) => {
   await conn();
   try {
-    const { commentId, blogId } = await params;
+    const { commentId, blogId } = params;
+    const userId = req.headers.get("userId"); // Extract userId from headers
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Unauthorized request" },
+        { status: 401 }
+      );
+    }
+
+    // Find the comment
+    const comment = await commentModel.findById(commentId);
+    if (!comment) {
+      return NextResponse.json(
+        { message: "Comment not found" },
+        { status: 404 }
+      );
+    }
+
+    // Ensure the comment belongs to the requesting user
+    if (comment.userId.toString() !== userId) {
+      return NextResponse.json(
+        { message: "Forbidden: You cannot delete this comment" },
+        { status: 403 }
+      );
+    }
+
+    // Find the blog and remove the comment
     const blog = await blogModel.findById(blogId);
+    if (!blog) {
+      return NextResponse.json({ message: "Blog not found" }, { status: 404 });
+    }
+
     await commentModel.findByIdAndDelete(commentId);
     blog.comments.pull(commentId);
     await blog.save();
+
     return NextResponse.json(
       {
-        message: "comment deleted successfully",
+        message: "Comment deleted successfully",
         commentId,
         blogId,
       },
@@ -25,7 +57,10 @@ export const DELETE = async (
       }
     );
   } catch (error) {
-    console.error("Error updating user:", error);
-    return NextResponse.json("Internal Server Error", { status: 500 });
+    console.error("Error deleting comment:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 };

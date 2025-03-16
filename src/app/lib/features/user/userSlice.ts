@@ -19,6 +19,7 @@ export const checkAuthStatus = createAsyncThunk(
       const res = await axios.get(`${API_URL}/auth/status`, {
         withCredentials: true,
       });
+
       return res.data;
     } catch (error) {
       console.error("Error while getting authentication status:", error);
@@ -26,6 +27,7 @@ export const checkAuthStatus = createAsyncThunk(
   }
 );
 interface IUser {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -70,6 +72,7 @@ const userSlice = createSlice({
       })
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         state.loading = "succeeded";
+        state.user = action.payload?.rootUser || null;
         state.isAuthenticated = action.payload?.isAuthenticated || false;
       })
       .addCase(checkAuthStatus.rejected, (state, action) => {

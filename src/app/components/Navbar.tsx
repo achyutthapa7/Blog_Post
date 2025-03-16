@@ -38,7 +38,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-6">
           <div
-            className="hidden sm:block"
+            className=""
             onClick={() => {
               redirect(`/write/blog/${uniqueId}/?redirect=${uniqueId}`);
             }}

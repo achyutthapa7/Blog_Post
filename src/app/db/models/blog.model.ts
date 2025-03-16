@@ -1,11 +1,21 @@
 import mongoose, { Document, Types } from "mongoose";
 
 export interface IBlog extends Document {
+  _id: string;
   userId: Types.ObjectId;
   title: string;
   content: string;
   likes: Types.ObjectId[];
-  comments: Types.ObjectId[];
+  comments: {
+    _id: Types.ObjectId;
+    userId: {
+      _id: string;
+      firstName: string;
+      lastName: string;
+    };
+    commentText: string;
+    createdAt: Date;
+  }[];
   createdAt: Date;
   updatedAt?: Date;
 }

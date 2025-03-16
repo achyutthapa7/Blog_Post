@@ -21,8 +21,15 @@ export const POST = async (
     blog.comments.push(newComment._id);
     await blog.save();
 
+    const populatedComment = await newComment.populate({
+      path: "userId",
+      select: "firstName lastName",
+    });
+
     return NextResponse.json(
       {
+        blogId,
+        newComment: populatedComment,
         message: "commented  successfully",
       },
       {

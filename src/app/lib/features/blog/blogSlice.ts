@@ -2,11 +2,11 @@ import { IBlog } from "@/app/db/models/blog.model";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchBlog = createAsyncThunk("post/fetchBlog", async () => {
-  const API_URL =
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
-      : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
+    : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
+export const fetchBlog = createAsyncThunk("blog/fetchBlog", async () => {
   try {
     const res = await axios.get(`${API_URL}/blogs/fetchBlogs`, {
       withCredentials: true,
@@ -16,6 +16,64 @@ export const fetchBlog = createAsyncThunk("post/fetchBlog", async () => {
     console.error("Error while fetching blog:", error);
   }
 });
+
+export const addBlog = createAsyncThunk(
+  "blog/addBlog",
+  async (blogData: { title: string; content: string }) => {
+    try {
+      const res = await axios.post(`${API_URL}/blogs/addBlog`, blogData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      console.log(res);
+      return res.data.post;
+    } catch (error) {
+      console.error("Error while adding blog:", error);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  "blog/addComment",
+  async ({ blogId, comment }: { blogId: string; comment: string }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/blogs/commentOnBlog/${blogId}`,
+        { commentText: comment },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      console.error("Error while adding comment:", error);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "blog/deleteComment",
+  async ({ blogId, commentId }: { blogId: string; commentId: string }) => {
+    try {
+      const res = await axios.delete(
+        `${API_URL}/blogs/deleteComment/${commentId}/${blogId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Error while deleting comment:", error);
+    }
+  }
+);
 
 const initialState: {
   blogs: IBlog[];
@@ -28,55 +86,7 @@ const initialState: {
 export const blogSlice = createSlice({
   name: "blog",
   initialState,
-  reducers: {
-    addBlog: (state, action) => {
-      const { blog } = action.payload;
-      console.log("addedBlog: ", state.blogs);
-      state.blogs = [...state.blogs, blog];
-      console.log("After adding: ", state.blogs);
-    },
-    removeBlog: (state, action) => {
-      const { blogId } = action.payload;
-      state.blogs = state.blogs.filter((b) => b._id != blogId);
-    },
-    likeBlog: (state, action) => {
-      const { blogId, userId } = action.payload;
-      state.blogs = state.blogs.map((b) =>
-        b.id === blogId ? { ...b, likes: [...b.likes, userId] } : b
-      );
-    },
-    unlikeBlog: (state, action) => {
-      const { userId, blogId } = action.payload;
-      state.blogs = state.blogs.map((b) =>
-        b._id === blogId
-          ? { ...b, likes: b.likes.filter((l) => l._id != userId) }
-          : b
-      );
-    },
-    commentOnBlog: (state, action) => {
-      const { blogId, comment } = action.payload;
-      state.blogs = state.blogs.map((b) =>
-        b._id === blogId
-          ? {
-              ...b,
-              comments: [...b.comments, comment],
-            }
-          : b
-      );
-    },
-    deleteComment: (state, action) => {
-      const { blogId, commentId } = action.payload;
-
-      state.blogs = state.blogs.map((b) =>
-        b._id === blogId
-          ? {
-              ...b,
-              comments: b.comments.filter((c) => c._id != commentId),
-            }
-          : b
-      );
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchBlog.pending, (state) => {
@@ -88,16 +98,27 @@ export const blogSlice = createSlice({
       })
       .addCase(fetchBlog.rejected, (state) => {
         state.loading = "failed";
+      })
+      .addCase(addBlog.fulfilled, (state, action) => {
+        state.blogs.unshift(action.payload);
+        state.loading = "succeeded";
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        const { blogId, newComment } = action.payload;
+        const blog = state.blogs.find((b) => b._id === blogId);
+        if (blog) blog.comments.unshift(newComment);
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const { blogId, commentId } = action.payload;
+        const blog = state.blogs.find((b) => b._id === blogId);
+        if (blog) {
+          blog.comments = blog.comments.filter(
+            (comment) => comment._id != commentId
+          );
+        }
       });
   },
 });
 
-export const {
-  addBlog,
-  removeBlog,
-  likeBlog,
-  unlikeBlog,
-  commentOnBlog,
-  deleteComment,
-} = blogSlice.actions;
+export const {} = blogSlice.actions;
 export default blogSlice.reducer;

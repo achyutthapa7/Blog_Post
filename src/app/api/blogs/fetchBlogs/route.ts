@@ -23,13 +23,15 @@ export const GET = async (req: NextRequest) => {
       .populate({
         path: "comments",
         model: commentModel,
+        options: { sort: { createdAt: -1 } },
         populate: {
           path: "userId",
           model: userModel,
           select: "firstName lastName",
         },
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .exec();
     if (blogs.length === 0) {
       return NextResponse.json({ message: "No blogs found" }, { status: 404 });
     }
