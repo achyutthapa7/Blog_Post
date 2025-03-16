@@ -5,11 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const DELETE = async (
   req: NextRequest,
-  { params }: { params: { commentId: string; blogId: string } }
+  { params }: { params: Promise<{ commentId: string; blogId: string }> }
 ) => {
   await conn();
   try {
-    const { commentId, blogId } = params;
+    const { commentId, blogId } = await params;
     const userId = req.headers.get("userId"); // Extract userId from headers
 
     if (!userId) {
