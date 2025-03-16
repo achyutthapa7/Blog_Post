@@ -16,11 +16,6 @@ export const GET = async (req: NextRequest) => {
         select: "firstName lastName",
       })
       .populate({
-        path: "likes",
-        model: userModel,
-        select: "firstName lastName",
-      })
-      .populate({
         path: "comments",
         model: commentModel,
         options: { sort: { createdAt: -1 } },

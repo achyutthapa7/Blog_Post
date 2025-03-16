@@ -67,7 +67,7 @@ export const deleteComment = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       console.error("Error while deleting comment:", error);
@@ -75,6 +75,37 @@ export const deleteComment = createAsyncThunk(
   }
 );
 
+export const likeBlog = createAsyncThunk(
+  "blog/likeComment",
+  async (blogId: string) => {
+    try {
+      const res = await axios.put(
+        `${API_URL}/blogs/likeBlog/${blogId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error while liking blog:", error);
+    }
+  }
+);
+
+export const unLikeBlog = createAsyncThunk(
+  "blog/unlikeBlog",
+  async (blogId: string) => {
+    try {
+      const res = await axios.put(`${API_URL}/blogs/unlikeBlog/${blogId}`, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error while unliking blog:", error);
+    }
+  }
+);
 const initialState: {
   blogs: IBlog[];
   loading: "idle" | "pending" | "failed" | "succeeded";
@@ -115,6 +146,20 @@ export const blogSlice = createSlice({
           blog.comments = blog.comments.filter(
             (comment) => comment._id != commentId
           );
+        }
+      })
+      .addCase(likeBlog.fulfilled, (state, action) => {
+        const { blogId, userId } = action.payload;
+        const blog = state.blogs.find((b) => b._id === blogId);
+        if (blog) {
+          blog?.likes?.push(userId);
+        }
+      })
+      .addCase(unLikeBlog.fulfilled, (state, action) => {
+        const { blogId, userId } = action.payload;
+        const blog = state.blogs.find((b) => b._id === blogId);
+        if (blog) {
+          blog.likes = blog?.likes?.filter((id) => id != userId);
         }
       });
   },

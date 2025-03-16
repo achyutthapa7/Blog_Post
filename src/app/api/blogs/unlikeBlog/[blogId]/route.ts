@@ -9,18 +9,25 @@ export const PUT = async (
   await conn();
   try {
     const { blogId } = await params;
-    const blog = await blogModel.findById(blogId);
+    const userId = req.headers.get("userId");
+    const blog = await blogModel.findOne({
+      _id: blogId,
+      likes: { $in: [userId] },
+    });
+    if (!blog)
+      return NextResponse.json(
+        { message: "you haven't like this blog" },
+        { status: 400 }
+      );
     if (blog.likes.includes(req.headers.get("userId"))) {
       await blogModel.findByIdAndUpdate(blogId, {
         $pull: {
-          likes: req.headers.get("userId"),
+          likes: userId,
         },
       });
     }
     return NextResponse.json(
-      {
-        message: "unliked successfully",
-      },
+      { userId, blogId, message: "unliked successfully" },
       {
         status: 200,
       }

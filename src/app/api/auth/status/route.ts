@@ -17,7 +17,7 @@ export const GET = async (req: NextRequest) => {
     const rootUser = await userModel
       .findById(userId)
       .select(
-        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt"
+        "-password -verificationCode -verificationCodeExpiry -createdAt  -updatedAt -authToken -authTokenExpiry"
       )
       .populate({
         path: "blogs",

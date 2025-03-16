@@ -5,7 +5,7 @@ export interface IBlog extends Document {
   userId: Types.ObjectId;
   title: string;
   content: string;
-  likes: Types.ObjectId[];
+  likes: Types.ObjectId[] | undefined;
   comments: {
     _id: Types.ObjectId;
     userId: {

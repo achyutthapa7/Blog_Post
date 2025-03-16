@@ -8,7 +8,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const userId = req.headers.get("userId");
     const friends = await userModel
-      .find<IUser>({ followers: { $in: userId } })
+      .find<IUser>({ followers: { $in: [userId] } })
       .populate({
         path: "blogs",
         model: blogModel,

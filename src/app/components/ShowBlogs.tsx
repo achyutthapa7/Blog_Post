@@ -5,6 +5,8 @@ import {
   addComment,
   deleteComment,
   fetchBlog,
+  likeBlog,
+  unLikeBlog,
 } from "../lib/features/blog/blogSlice";
 import { AppDispatch, RootState } from "../lib/store";
 import Loader from "./Loader";
@@ -14,6 +16,8 @@ import {
   HandThumbUpIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
+import { HandThumbUpIcon as HandThumbUpSolid } from "@heroicons/react/24/solid"; // ✅ Use 24/solid for filled version
+
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -41,14 +45,17 @@ const ShowBlogs = () => {
 export default ShowBlogs;
 
 const BlogPost = ({ blog }: { blog: IBlog }) => {
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user } = useSelector((state: RootState) => state?.user);
+
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isMoreCommentsShown, setIsMoreCommentsShown] = useState(false);
   const [comment, setComment] = useState("");
   const [hoveredCommentId, setHoveredCommentId] = useState<string | null>(null);
-
+  const [isLiked, setIsLiked] = useState(
+    blog?.likes?.some((id) => id.toString() === user?._id?.toString())
+  );
   const handleAddComment = async (blogId: string) => {
     setIsLoading(true);
     if (!comment) {
@@ -78,6 +85,15 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     }
   };
 
+  const handleLike = async (blogId: string) => {
+    setIsLiked(true);
+    await dispatch(likeBlog(blogId));
+  };
+  const handleUnlike = async (blogId: string) => {
+    setIsLiked(false);
+    await dispatch(unLikeBlog(blogId));
+  };
+
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 h-auto border border-black/20 rounded-2xl mt-10 p-2 ">
       <div className="px-5">
@@ -93,14 +109,27 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
           </p>
           <span
             className="text-blue-500 cursor-pointer"
-            onClick={() => router.push(`/blogs/?blogId=${blog._id}`)}
+            onClick={() => router.push(`/blogs/?blogId=${blog?._id}`)}
           >
             Read More...
           </span>
         </div>
         <div className="flex gap-6 mb-2">
           <div className="flex gap-2 items-center">
-            <HandThumbUpIcon className="h-5 w-5" />
+            {isLiked ? (
+              <HandThumbUpSolid
+                className="h-5 w-5 cursor-pointer text-blue-500"
+                onClick={() => {
+                  handleUnlike(blog?._id.toString());
+                }}
+              />
+            ) : (
+              <HandThumbUpIcon
+                className="h-5 w-5 cursor-pointer"
+                onClick={() => handleLike(blog?._id.toString())}
+              />
+            )}
+
             <p>{blog?.likes?.length}</p>
           </div>
           <div className="flex gap-2 items-center">
@@ -164,7 +193,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                 </div>
 
                 {/* Delete Button */}
-                {user && user._id === comment.userId._id && (
+                {user && user._id.toString() === comment.userId._id && (
                   <div className="relative">
                     <span className="text-lg font-bold cursor-pointer">
                       ...

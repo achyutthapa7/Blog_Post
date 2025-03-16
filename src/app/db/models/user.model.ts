@@ -1,6 +1,7 @@
 import mongoose, { CallbackError, Document, Types } from "mongoose";
 import bcrypt from "bcrypt";
 export interface IUser extends Document {
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;

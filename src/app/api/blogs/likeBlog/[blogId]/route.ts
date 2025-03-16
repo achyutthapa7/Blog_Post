@@ -8,9 +8,11 @@ export const PUT = async (
 ) => {
   await conn();
   try {
+    const userId = req.headers.get("userId");
     const { blogId } = await params;
+
     const blog = await blogModel.findById(blogId);
-    if (blog.likes.includes(req.headers.get("userId"))) {
+    if (blog.likes.includes(userId)) {
       return NextResponse.json(
         {
           message: "Already liked",
@@ -22,13 +24,11 @@ export const PUT = async (
     }
     await blogModel.findByIdAndUpdate(blogId, {
       $push: {
-        likes: req.headers.get("userId"),
+        likes: userId,
       },
     });
     return NextResponse.json(
-      {
-        message: "Liked successfully",
-      },
+      { userId, blogId, message: "Liked successfully" },
       {
         status: 200,
       }

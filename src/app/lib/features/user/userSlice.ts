@@ -6,6 +6,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Types } from "mongoose";
 
 export const checkAuthStatus = createAsyncThunk(
   "user/checkAuthStatus",
@@ -27,7 +28,7 @@ export const checkAuthStatus = createAsyncThunk(
   }
 );
 interface IUser {
-  _id: string;
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
