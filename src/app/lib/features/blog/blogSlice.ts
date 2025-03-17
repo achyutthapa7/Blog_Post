@@ -6,16 +6,19 @@ const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
     : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
-export const fetchBlog = createAsyncThunk("blog/fetchBlog", async () => {
-  try {
-    const res = await axios.get(`${API_URL}/blogs/fetchBlogs`, {
-      withCredentials: true,
-    });
-    return res.data;
-  } catch (error) {
-    console.error("Error while fetching blog:", error);
+export const fetchBlog = createAsyncThunk(
+  "blog/fetchBlog",
+  async (page: number) => {
+    try {
+      const res = await axios.get(`${API_URL}/blogs/fetchBlogs?page=${page}`, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error while fetching blog:", error);
+    }
   }
-});
+);
 
 export const addBlog = createAsyncThunk(
   "blog/addBlog",
@@ -108,9 +111,13 @@ export const unLikeBlog = createAsyncThunk(
 );
 const initialState: {
   blogs: IBlog[];
+  totalBlogs: number;
+  limit:number,
   loading: "idle" | "pending" | "failed" | "succeeded";
 } = {
   blogs: [],
+  totalBlogs: 0,
+  limit:0,
   loading: "idle",
 };
 
@@ -124,14 +131,17 @@ export const blogSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchBlog.fulfilled, (state, action) => {
+        const { blogs, totalBlogs,limit } = action.payload;
         state.loading = "succeeded";
-        state.blogs = action.payload;
+        state.blogs = blogs;
+        state.totalBlogs = totalBlogs;
+        state.limit = limit
       })
       .addCase(fetchBlog.rejected, (state) => {
         state.loading = "failed";
       })
       .addCase(addBlog.fulfilled, (state, action) => {
-        state.blogs.unshift(action.payload);
+        state?.blogs?.unshift(action.payload);
         state.loading = "succeeded";
       })
       .addCase(addComment.fulfilled, (state, action) => {

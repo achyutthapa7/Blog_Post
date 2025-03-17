@@ -12,6 +12,8 @@ import { AppDispatch, RootState } from "../lib/store";
 import Loader from "./Loader";
 import { IBlog } from "../db/models/blog.model";
 import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
   ChatBubbleBottomCenterIcon,
   HandThumbUpIcon,
   PaperAirplaneIcon,
@@ -22,22 +24,52 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const ShowBlogs = () => {
-  const { blogs, loading } = useSelector((state: RootState) => state.blog);
+  const { blogs, totalBlogs, loading,limit } = useSelector(
+    (state: RootState) => state.blog
+  );
+  const [page, setPage] = useState(1);
+ 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchBlog());
-  }, [dispatch]);
+    dispatch(fetchBlog(page));
+  }, [dispatch, page]);
 
   if (loading === "idle" || loading === "pending") {
     return <Loader />;
   }
 
+  const handleNext = () => {
+    if (page * limit < totalBlogs) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
+  };
+
   return (
-    <div className="w-full flex items-center justify-center px-10 flex-col">
-      {blogs.map((blog, index) => (
-        <BlogPost key={blog?._id || index} blog={blog} />
-      ))}
+    <div className="w-full flex items-center justify-center px-10 flex-col py-10">
+      {blogs?.length > 0 &&
+        blogs?.map((blog, index) => (
+          <BlogPost key={blog?._id || index} blog={blog} />
+        ))}
+      <div className="flex gap-10 items-center justify-center mt-3">
+        <button
+          className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
+          onClick={handlePrev}
+        >
+          <ArrowLeftIcon className="h-6 w-6 text-white " />
+        </button>
+
+        <button
+          className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
+          onClick={handleNext}
+        >
+          <ArrowRightIcon className="h-6 w-6 text-white " />
+        </button>
+      </div>
     </div>
   );
 };
