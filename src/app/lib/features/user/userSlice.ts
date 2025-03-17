@@ -13,7 +13,8 @@ export const checkAuthStatus = createAsyncThunk(
   async () => {
     const API_URL =
       process.env.NODE_ENV === "production"
-        ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
+        ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION ||
+          "https://blog-post-7dgh.onrender.com/"
         : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
 
     try {

@@ -4,7 +4,8 @@ import axios from "axios";
 
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION
+    ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION ||
+      "https://blog-post-7dgh.onrender.com/"
     : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
 export const fetchBlog = createAsyncThunk(
   "blog/fetchBlog",
@@ -112,12 +113,12 @@ export const unLikeBlog = createAsyncThunk(
 const initialState: {
   blogs: IBlog[];
   totalBlogs: number;
-  limit:number,
+  limit: number;
   loading: "idle" | "pending" | "failed" | "succeeded";
 } = {
   blogs: [],
   totalBlogs: 0,
-  limit:0,
+  limit: 0,
   loading: "idle",
 };
 
@@ -131,11 +132,11 @@ export const blogSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchBlog.fulfilled, (state, action) => {
-        const { blogs, totalBlogs,limit } = action.payload;
+        const { blogs, totalBlogs, limit } = action.payload;
         state.loading = "succeeded";
         state.blogs = blogs;
         state.totalBlogs = totalBlogs;
-        state.limit = limit
+        state.limit = limit;
       })
       .addCase(fetchBlog.rejected, (state) => {
         state.loading = "failed";
