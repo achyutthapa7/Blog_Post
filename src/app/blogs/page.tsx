@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getBlogById } from "../utils/requests";
 import Link from "next/link";
-
+import ReactMarkdown from "react-markdown";
 const Page = () => {
   interface Blog {
     _id: string;
@@ -64,7 +64,9 @@ const Page = () => {
           {new Date(blog?.createdAt || Date.now()).toLocaleDateString()}{" "}
           {blog?.likes?.length} Likes
         </p>
-        <p className="text-lg leading-relaxed">{blog?.content}</p>
+        <div>
+          <ReactMarkdown>{String(blog?.content)}</ReactMarkdown>
+        </div>
       </div>
     </ProtectedRoute>
   );

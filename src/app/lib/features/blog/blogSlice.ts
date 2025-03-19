@@ -31,7 +31,6 @@ export const addBlog = createAsyncThunk(
         },
         withCredentials: true,
       });
-      console.log(res);
       return res.data.post;
     } catch (error) {
       console.error("Error while adding blog:", error);
@@ -125,7 +124,16 @@ const initialState: {
 export const blogSlice = createSlice({
   name: "blog",
   initialState,
-  reducers: {},
+  reducers: {
+    setBlogs: (state, action) => {
+      const isAlreadyAdded = state.blogs.some(
+        (b) => b._id === action.payload._id
+      );
+      if (!isAlreadyAdded)
+        if (!isAlreadyAdded) state.blogs.unshift(action.payload);
+    },
+    setComments: (state, action) => {},
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBlog.pending, (state) => {
@@ -141,10 +149,10 @@ export const blogSlice = createSlice({
       .addCase(fetchBlog.rejected, (state) => {
         state.loading = "failed";
       })
-      .addCase(addBlog.fulfilled, (state, action) => {
-        state?.blogs?.unshift(action.payload);
-        state.loading = "succeeded";
-      })
+      // .addCase(addBlog.fulfilled, (state, action) => {
+      //   state.blogs.unshift(action.payload);
+      //   state.loading = "succeeded";
+      // })
       .addCase(addComment.fulfilled, (state, action) => {
         const { blogId, newComment } = action.payload;
         const blog = state.blogs.find((b) => b._id === blogId);
@@ -176,5 +184,5 @@ export const blogSlice = createSlice({
   },
 });
 
-export const {} = blogSlice.actions;
+export const { setBlogs } = blogSlice.actions;
 export default blogSlice.reducer;

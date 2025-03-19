@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addBlog,
   addComment,
   deleteComment,
   fetchBlog,
   likeBlog,
+  setBlogs,
   unLikeBlog,
 } from "../lib/features/blog/blogSlice";
 import { AppDispatch, RootState } from "../lib/store";
@@ -18,25 +20,45 @@ import {
   HandThumbUpIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-import { HandThumbUpIcon as HandThumbUpSolid } from "@heroicons/react/24/solid"; // ✅ Use 24/solid for filled version
-
+import { HandThumbUpIcon as HandThumbUpSolid } from "@heroicons/react/24/solid";
+import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5002", {
+  autoConnect: false,
+});
 
 const ShowBlogs = () => {
-  const { blogs, totalBlogs, loading,limit } = useSelector(
+  const { blogs, totalBlogs, loading, limit } = useSelector(
     (state: RootState) => state.blog
   );
   const [page, setPage] = useState(1);
- 
+
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchBlog(page));
   }, [dispatch, page]);
 
+  useEffect(() => {
+    socket.connect();
+    socket.on("new-blog", (blog) => {
+      dispatch(setBlogs(blog));
+    });
+    return () => {
+      socket.off("connect");
+    };
+  }, [dispatch, page]);
+  console.log("blogs", blogs);
   if (loading === "idle" || loading === "pending") {
-    return <Loader />;
+    return (
+      <>
+        <Loader />
+        {/* <h1>Something went wrong</h1> */}
+      </>
+    );
   }
 
   const handleNext = () => {
@@ -50,27 +72,32 @@ const ShowBlogs = () => {
   };
 
   return (
-    <div className="w-full flex items-center justify-center px-10 flex-col py-10">
-      {blogs?.length > 0 &&
-        blogs?.map((blog, index) => (
-          <BlogPost key={blog?._id || index} blog={blog} />
-        ))}
-      <div className="flex gap-10 items-center justify-center mt-3">
-        <button
-          className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
-          onClick={handlePrev}
-        >
-          <ArrowLeftIcon className="h-6 w-6 text-white " />
-        </button>
+    <>
+      {blogs?.length > 0 ? (
+        <div className="w-full flex items-center justify-center px-10 flex-col py-10">
+          {blogs?.map((blog, index) => (
+            <BlogPost key={blog?._id || index} blog={blog} />
+          ))}
+          <div className="flex gap-10 items-center justify-center mt-3">
+            <button
+              className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
+              onClick={handlePrev}
+            >
+              <ArrowLeftIcon className="h-6 w-6 text-white " />
+            </button>
 
-        <button
-          className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
-          onClick={handleNext}
-        >
-          <ArrowRightIcon className="h-6 w-6 text-white " />
-        </button>
-      </div>
-    </div>
+            <button
+              className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
+              onClick={handleNext}
+            >
+              <ArrowRightIcon className="h-6 w-6 text-white " />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>no blogs</>
+      )}
+    </>
   );
 };
 
@@ -78,7 +105,6 @@ export default ShowBlogs;
 
 const BlogPost = ({ blog }: { blog: IBlog }) => {
   const { user } = useSelector((state: RootState) => state?.user);
-
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -155,9 +181,9 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
           </p>
         </div>
         <div className="mb-3 mt-2">
-          <p className="font-light text-md tracking-wide h-[54.5px] overflow-hidden">
-            {blog?.content}
-          </p>
+          <div className="font-light text-md tracking-wide h-[54.5px] overflow-hidden">
+            <ReactMarkdown>{String(blog?.content)}</ReactMarkdown>
+          </div>
           <span
             className="text-blue-500 cursor-pointer"
             onClick={() => router.push(`/blogs/?blogId=${blog?._id}`)}
