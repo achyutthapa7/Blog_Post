@@ -31,6 +31,7 @@ const SOCKET_URL =
     ? process.env.NEXT_PUBLIC_SOCKET_URL_PRODUCTION
     : process.env.NEXT_PUBLIC_SOCKET_URL_DEVELOPMENT;
 
+console.log(SOCKET_URL);
 const socket = io(SOCKET_URL, {
   autoConnect: false,
 });
@@ -56,7 +57,6 @@ const ShowBlogs = () => {
       socket.off("connect");
     };
   }, [dispatch, page]);
-  console.log("blogs", blogs);
   if (loading === "idle" || loading === "pending") {
     return (
       <>
