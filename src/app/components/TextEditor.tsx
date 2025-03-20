@@ -11,7 +11,12 @@ import { toast } from "react-toastify";
 import { Loader } from "./Login";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5002");
+const SOCKET_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_SOCKET_URL_PRODUCTION
+    : process.env.NEXT_PUBLIC_SOCKET_URL_DEVELOPMENT;
+
+const socket = io(SOCKET_URL);
 const TextEditor = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
