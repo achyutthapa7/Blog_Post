@@ -2,7 +2,11 @@ import mongoose, { Document, Types } from "mongoose";
 
 export interface IBlog extends Document {
   _id: string;
-  userId: Types.ObjectId;
+  userId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
   title: string;
   content: string;
   likes: Types.ObjectId[] | undefined;

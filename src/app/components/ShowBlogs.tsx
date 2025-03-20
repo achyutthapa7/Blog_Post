@@ -119,6 +119,27 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     blog?.likes?.some((id) => id.toString() === user?._id?.toString())
   );
   const [likeCount, setLikeCount] = useState(blog?.likes?.length);
+
+  const getRandomColor = (userId: string) => {
+    const colors = [
+      "bg-blue-500",
+      "bg-green-500",
+      "bg-purple-500",
+      "bg-pink-500",
+      "bg-yellow-500",
+      "bg-red-500",
+      "bg-indigo-500",
+      "bg-teal-500",
+      "bg-orange-500",
+      "bg-cyan-500",
+    ];
+    // Use userId to generate a consistent index for the same user
+    const index =
+      userId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      colors.length;
+    return colors[index];
+  };
+
   const handleAddComment = async (blogId: string) => {
     setIsLoading(true);
     if (!comment) {
@@ -179,10 +200,28 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     <div className="w-full md:w-3/4 lg:w-1/2 h-auto border border-black/20 rounded-2xl mt-10 p-2 ">
       <div className="px-5">
         <div className="flex flex-col items-start">
-          <p className="text-3xl font-semibold">{blog?.title}</p>
-          <p className="text-slate-400 font-extralight text-[0.9rem]">
-            {new Date(blog?.createdAt).toLocaleDateString()}
-          </p>
+          <div className="flex items-center gap-3">
+            <div
+              className={`w-10 h-10 rounded-full ${getRandomColor(
+                blog?.userId?._id
+              )} flex items-center justify-center text-white font-semibold`}
+            >
+              {blog?.userId?.firstName?.[0]?.toUpperCase()}
+              {blog?.userId?.lastName?.[0]?.toUpperCase()}
+            </div>
+            <div className="flex flex-col">
+              <p className="font-medium">
+                {blog?.userId?.firstName} {blog?.userId?.lastName}
+              </p>
+              <p className="text-slate-400 font-extralight text-[0.9rem]">
+                {new Date(blog?.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
+          <p className="text-3xl font-semibold mt-2">{blog?.title}</p>
         </div>
         <div className="mb-3 mt-2">
           <div className="font-light text-md tracking-wide h-[54.5px] overflow-hidden">

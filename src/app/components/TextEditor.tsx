@@ -39,6 +39,7 @@ const TextEditor = () => {
       const response = await dispatch(addBlog({ title, content })).unwrap();
       if (response) {
         toast.success("Blog added successfully");
+        console.log({ response });
         socket.emit("new-blog", response);
         router.push("/home");
       } else {

@@ -19,10 +19,15 @@ export const POST = async (req: NextRequest) => {
     await newBlog.save();
     rootUser.blogs.push(newBlog._id);
     await rootUser.save();
+    const populatedBlog = await blogModel.findById(newBlog._id).populate({
+      path: "userId",
+      select: "firstName lastName",
+    });
+
     return NextResponse.json(
       {
         message: "Blog created successfully",
-        post: newBlog,
+        post: populatedBlog,
       },
       {
         status: 201,
