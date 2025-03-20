@@ -191,23 +191,48 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
 
   const handleLike = async (blogId: string) => {
     if (!user) return;
-    const res = await dispatch(likeBlog(blogId)).unwrap();
-    if (res) {
-      setIsLiked(true);
-      socket.emit("like-blog", res);
-    } else {
+    // Optimistically update UI
+    setIsLiked(true);
+    dispatch(blogLike({ blogId, userId: user._id }));
+
+    try {
+      const res = await dispatch(likeBlog(blogId)).unwrap();
+      if (!res) {
+        // Revert on failure
+        setIsLiked(false);
+        dispatch(blogUnlike({ blogId, userId: user._id }));
+        toast.error("Failed to like blog.");
+      } else {
+        socket.emit("like-blog", res);
+      }
+    } catch (error) {
+      // Revert on error
+      setIsLiked(false);
+      dispatch(blogUnlike({ blogId, userId: user._id }));
       toast.error("Failed to like blog.");
     }
   };
 
   const handleUnlike = async (blogId: string) => {
     if (!user) return;
+    // Optimistically update UI
     setIsLiked(false);
-    const res = await dispatch(unLikeBlog(blogId)).unwrap();
-    if (res) {
-      setIsLiked(false);
-      socket.emit("unlike-blog", res);
-    } else {
+    dispatch(blogUnlike({ blogId, userId: user._id }));
+
+    try {
+      const res = await dispatch(unLikeBlog(blogId)).unwrap();
+      if (!res) {
+        // Revert on failure
+        setIsLiked(true);
+        dispatch(blogLike({ blogId, userId: user._id }));
+        toast.error("Failed to unlike blog.");
+      } else {
+        socket.emit("unlike-blog", res);
+      }
+    } catch (error) {
+      // Revert on error
+      setIsLiked(true);
+      dispatch(blogLike({ blogId, userId: user._id }));
       toast.error("Failed to unlike blog.");
     }
   };
