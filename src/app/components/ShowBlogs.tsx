@@ -84,17 +84,23 @@ const ShowBlogs = () => {
             <BlogPost key={blog?._id || index} blog={blog} />
           ))}
           <div className="w-full flex items-center justify-center mt-8">
-            {loading === "pending" ? (
-              <Loader />
-            ) : page * limit < totalBlogs ? (
+            {page * limit < totalBlogs && (
               <button
                 onClick={handleLoadMore}
-                className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
+                disabled={loading === "pending"}
+                className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Load More
-                <ArrowDownIcon className="h-5 w-5" />
+                {loading === "pending" ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    Load More
+                    <ArrowDownIcon className="h-5 w-5" />
+                  </>
+                )}
               </button>
-            ) : (
+            )}
+            {page * limit >= totalBlogs && (
               <p className="text-gray-500">No more blogs to load</p>
             )}
           </div>
