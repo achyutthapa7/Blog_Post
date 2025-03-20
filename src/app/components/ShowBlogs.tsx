@@ -50,7 +50,6 @@ const ShowBlogs = () => {
   useEffect(() => {
     socket.connect();
     socket.on("new-blog", (blog) => {
-      console.log("blog", blog);
       dispatch(setBlogs(blog));
     });
     return () => {

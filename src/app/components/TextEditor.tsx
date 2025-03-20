@@ -40,7 +40,7 @@ const TextEditor = () => {
       if (response) {
         toast.success("Blog added successfully");
         socket.emit("new-blog", response);
-        // router.push("/home");
+        router.push("/home");
       } else {
         toast.error("Failed to add blog.");
       }
