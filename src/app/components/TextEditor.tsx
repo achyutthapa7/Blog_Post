@@ -16,7 +16,10 @@ const SOCKET_URL =
     ? process.env.NEXT_PUBLIC_SOCKET_URL_PRODUCTION
     : process.env.NEXT_PUBLIC_SOCKET_URL_DEVELOPMENT;
 
-const socket = io(SOCKET_URL);
+const socket = io(SOCKET_URL, {
+  autoConnect: false,
+  transports: ["websocket", "polling"],
+});
 const TextEditor = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
