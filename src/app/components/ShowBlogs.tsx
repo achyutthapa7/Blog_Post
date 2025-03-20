@@ -33,7 +33,6 @@ const SOCKET_URL =
 
 const socket = io(SOCKET_URL, {
   autoConnect: false,
-  transports: ["websocket", "polling"],
 });
 
 const ShowBlogs = () => {
@@ -51,6 +50,7 @@ const ShowBlogs = () => {
   useEffect(() => {
     socket.connect();
     socket.on("new-blog", (blog) => {
+      console.log("blog", blog);
       dispatch(setBlogs(blog));
     });
     return () => {

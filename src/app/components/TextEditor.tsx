@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../lib/store";
 import { addBlog } from "../lib/features/blog/blogSlice";
@@ -18,9 +18,11 @@ const SOCKET_URL =
 
 const socket = io(SOCKET_URL, {
   autoConnect: false,
-  transports: ["websocket", "polling"],
 });
 const TextEditor = () => {
+  useEffect(() => {
+    socket.connect();
+  }, []);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -38,7 +40,7 @@ const TextEditor = () => {
       if (response) {
         toast.success("Blog added successfully");
         socket.emit("new-blog", response);
-        router.push("/home");
+        // router.push("/home");
       } else {
         toast.error("Failed to add blog.");
       }
