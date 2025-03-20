@@ -8,7 +8,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const searchParams = req.nextUrl.searchParams;
     const page: number = Number(searchParams?.get("page")) || 1;
-    const limit = 3;
+    const limit = 20;
     const skip = (page - 1) * limit;
     const totalBlogs = await blogModel.countDocuments();
 

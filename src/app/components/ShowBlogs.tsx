@@ -18,6 +18,7 @@ import { AppDispatch, RootState } from "../lib/store";
 import Loader from "./Loader";
 import { IBlog } from "../db/models/blog.model";
 import {
+  ArrowDownIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
   ChatBubbleBottomCenterIcon,
@@ -59,24 +60,20 @@ const ShowBlogs = () => {
     return () => {
       socket.off("connect");
     };
-  }, [dispatch, page]);
-  if (loading === "idle" || loading === "pending") {
+  }, [dispatch]);
+
+  if (loading === "idle" && blogs.length === 0) {
     return (
       <>
         <Loader />
-        {/* <h1>Something went wrong</h1> */}
       </>
     );
   }
 
-  const handleNext = () => {
+  const handleLoadMore = () => {
     if (page * limit < totalBlogs) {
       setPage((prevPage) => prevPage + 1);
     }
-  };
-
-  const handlePrev = () => {
-    setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
 
   return (
@@ -86,20 +83,20 @@ const ShowBlogs = () => {
           {blogs?.map((blog, index) => (
             <BlogPost key={blog?._id || index} blog={blog} />
           ))}
-          <div className="flex gap-10 items-center justify-center mt-3">
-            <button
-              className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
-              onClick={handlePrev}
-            >
-              <ArrowLeftIcon className="h-6 w-6 text-white " />
-            </button>
-
-            <button
-              className="cursor-pointer bg-blue-400/80 text-white px-10 py-2 rounded-md hover:bg-blue-400 active:bg-blue-400/90"
-              onClick={handleNext}
-            >
-              <ArrowRightIcon className="h-6 w-6 text-white " />
-            </button>
+          <div className="w-full flex items-center justify-center mt-8">
+            {loading === "pending" ? (
+              <Loader />
+            ) : page * limit < totalBlogs ? (
+              <button
+                onClick={handleLoadMore}
+                className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
+              >
+                Load More
+                <ArrowDownIcon className="h-5 w-5" />
+              </button>
+            ) : (
+              <p className="text-gray-500">No more blogs to load</p>
+            )}
           </div>
         </div>
       ) : (
