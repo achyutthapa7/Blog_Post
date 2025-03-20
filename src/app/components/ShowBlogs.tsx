@@ -167,7 +167,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     }
     const res = await dispatch(addComment({ blogId, comment })).unwrap();
     if (res) {
-      toast.success("Comment added successfully");
+      // toast.success("Comment added successfully");
       socket.emit("add-comment", res.newComment);
       setComment("");
       setIsLoading(false);
@@ -182,7 +182,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
       const res = await dispatch(deleteComment({ blogId, commentId }));
       if (res) {
         socket.emit("delete-comment", res);
-        toast.success("Comment deleted successfully");
+        // toast.success("Comment deleted successfully");
       } else {
         toast.error("Failed to delete comment.");
       }
