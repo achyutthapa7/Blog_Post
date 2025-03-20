@@ -194,7 +194,6 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     // Optimistically update UI
     setIsLiked(true);
     dispatch(blogLike({ blogId, userId: user._id }));
-
     try {
       const res = await dispatch(likeBlog(blogId)).unwrap();
       if (!res) {
@@ -206,7 +205,6 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
         socket.emit("like-blog", res);
       }
     } catch (error) {
-      // Revert on error
       setIsLiked(false);
       dispatch(blogUnlike({ blogId, userId: user._id }));
       toast.error("Failed to like blog.");

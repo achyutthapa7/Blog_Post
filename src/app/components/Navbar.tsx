@@ -7,9 +7,13 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { RootState } from "../lib/store";
 
 const Navbar = () => {
+  const { user } = useSelector((state: RootState) => state?.user);
+
   const uniqueId = uuidv4();
   const [searchBarOpen, setSearchBarOpen] = useState(false);
 
@@ -58,9 +62,8 @@ const Navbar = () => {
           <div className="cursor-pointer">
             <BellIcon className="h-6 w-6 text-gray-500" />
           </div>
-
           <div className="w-[35px] h-[35px] rounded-full bg-blue-800 flex items-center justify-center text-xl text-slate-200">
-            {"A"}
+            {user?.firstName?.charAt(0).toUpperCase()}
           </div>
         </div>
       </div>
