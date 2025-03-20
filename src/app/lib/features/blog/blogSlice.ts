@@ -132,7 +132,38 @@ export const blogSlice = createSlice({
       if (!isAlreadyAdded)
         if (!isAlreadyAdded) state.blogs.unshift(action.payload);
     },
-    setComments: (state, action) => {},
+    setComments: (state, action) => {
+      const blog = state.blogs.find(
+        (b) => b._id === action.payload.postedBlogId
+      );
+      const isAlreadyAdded = blog?.comments?.find(
+        (comment) => comment._id === action.payload._id
+      );
+      if (!isAlreadyAdded) blog?.comments?.unshift(action.payload);
+    },
+    removeComment: (state, action) => {
+      const blog = state?.blogs?.find(
+        (blog) => blog._id === action.payload.blogId
+      );
+
+      if (blog) {
+        blog.comments = blog.comments.filter(
+          (comment) => comment._id != action.payload.commentId
+        );
+      }
+    },
+    blogLike: (state, action) => {
+      const blog = state?.blogs?.find((b) => b._id === action?.payload?.blogId);
+      const isAlreadyLiked = blog?.likes?.includes(action?.payload?.userId);
+      if (!isAlreadyLiked) blog?.likes?.push(action?.payload?.userId);
+    },
+    blogUnlike: (state, action) => {
+      const blog = state?.blogs?.find((b) => b._id === action?.payload?.blogId);
+      const isAlreadyLiked = blog?.likes?.includes(action?.payload?.userId);
+      if (isAlreadyLiked && blog && blog.likes) {
+        blog.likes = blog.likes.filter((id) => id != action?.payload?.userId);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -148,41 +179,10 @@ export const blogSlice = createSlice({
       })
       .addCase(fetchBlog.rejected, (state) => {
         state.loading = "failed";
-      })
-      // .addCase(addBlog.fulfilled, (state, action) => {
-      //   state.blogs.unshift(action.payload);
-      //   state.loading = "succeeded";
-      // })
-      .addCase(addComment.fulfilled, (state, action) => {
-        const { blogId, newComment } = action.payload;
-        const blog = state.blogs.find((b) => b._id === blogId);
-        if (blog) blog.comments.unshift(newComment);
-      })
-      .addCase(deleteComment.fulfilled, (state, action) => {
-        const { blogId, commentId } = action.payload;
-        const blog = state.blogs.find((b) => b._id === blogId);
-        if (blog) {
-          blog.comments = blog.comments.filter(
-            (comment) => comment._id != commentId
-          );
-        }
-      })
-      .addCase(likeBlog.fulfilled, (state, action) => {
-        const { blogId, userId } = action.payload;
-        const blog = state.blogs.find((b) => b._id === blogId);
-        if (blog) {
-          blog?.likes?.push(userId);
-        }
-      })
-      .addCase(unLikeBlog.fulfilled, (state, action) => {
-        const { blogId, userId } = action.payload;
-        const blog = state.blogs.find((b) => b._id === blogId);
-        if (blog) {
-          blog.likes = blog?.likes?.filter((id) => id != userId);
-        }
       });
   },
 });
 
-export const { setBlogs } = blogSlice.actions;
+export const { setBlogs, setComments, removeComment, blogLike, blogUnlike } =
+  blogSlice.actions;
 export default blogSlice.reducer;

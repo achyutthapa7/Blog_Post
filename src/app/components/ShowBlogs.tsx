@@ -4,10 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addBlog,
   addComment,
+  blogLike,
+  blogUnlike,
   deleteComment,
   fetchBlog,
   likeBlog,
+  removeComment,
   setBlogs,
+  setComments,
   unLikeBlog,
 } from "../lib/features/blog/blogSlice";
 import { AppDispatch, RootState } from "../lib/store";
@@ -118,7 +122,22 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
   const [isLiked, setIsLiked] = useState(
     blog?.likes?.some((id) => id.toString() === user?._id?.toString())
   );
-  const [likeCount, setLikeCount] = useState(blog?.likes?.length);
+
+  useEffect(() => {
+    socket.on("add-comment", (comment) => {
+      dispatch(setComments(comment));
+    });
+
+    socket.on("delete-comment", (comment) => {
+      dispatch(removeComment(comment));
+    });
+    socket.on("like-blog", (res) => {
+      dispatch(blogLike(res));
+    });
+    socket.on("unlike-blog", (res) => {
+      dispatch(blogUnlike(res));
+    });
+  }, [socket]);
 
   const getRandomColor = (userId: string) => {
     const colors = [
@@ -133,7 +152,6 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
       "bg-orange-500",
       "bg-cyan-500",
     ];
-    // Use userId to generate a consistent index for the same user
     const index =
       userId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
       colors.length;
@@ -150,6 +168,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     const res = await dispatch(addComment({ blogId, comment })).unwrap();
     if (res) {
       toast.success("Comment added successfully");
+      socket.emit("add-comment", res.newComment);
       setComment("");
       setIsLoading(false);
     } else {
@@ -162,6 +181,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
       const res = await dispatch(deleteComment({ blogId, commentId }));
       if (res) {
+        socket.emit("delete-comment", res);
         toast.success("Comment deleted successfully");
       } else {
         toast.error("Failed to delete comment.");
@@ -171,27 +191,23 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
 
   const handleLike = async (blogId: string) => {
     if (!user) return;
-
-    setIsLiked(true);
-    setLikeCount((prev) => (prev ?? 0) + 1);
-
     const res = await dispatch(likeBlog(blogId)).unwrap();
-    if (!res) {
-      setIsLiked(false);
-      setLikeCount((prev) => (prev ?? 0) - 1);
+    if (res) {
+      setIsLiked(true);
+      socket.emit("like-blog", res);
+    } else {
       toast.error("Failed to like blog.");
     }
   };
+
   const handleUnlike = async (blogId: string) => {
     if (!user) return;
-
     setIsLiked(false);
-    setLikeCount((prev) => (prev ?? 0) - 1);
-
     const res = await dispatch(unLikeBlog(blogId)).unwrap();
-    if (!res) {
-      setIsLiked(true);
-      setLikeCount((prev) => (prev ?? 0) + 1);
+    if (res) {
+      setIsLiked(false);
+      socket.emit("unlike-blog", res);
+    } else {
       toast.error("Failed to unlike blog.");
     }
   };
@@ -246,7 +262,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
               />
             )}
 
-            <p>{likeCount}</p>
+            <p>{blog?.likes?.length}</p>
           </div>
           <div className="flex gap-2 items-center">
             <ChatBubbleBottomCenterIcon className="h-5 w-5" />
