@@ -201,11 +201,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
       <div className="px-5">
         <div className="flex flex-col items-start">
           <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-full ${getRandomColor(
-                blog?.userId?._id
-              )} flex items-center justify-center text-white font-semibold`}
-            >
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
               {blog?.userId?.firstName?.[0]?.toUpperCase()}
               {blog?.userId?.lastName?.[0]?.toUpperCase()}
             </div>
