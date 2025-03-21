@@ -37,7 +37,9 @@ const Verification = () => {
       router.push(`/login/${uniqueId}/?redirect=home`);
       console.log("Verification successful");
     } else {
-      toast.error("Invalid verification code");
+      toast.error(
+        "Invalid verification code or code is expired, please try again"
+      );
     }
   };
   return (
