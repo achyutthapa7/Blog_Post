@@ -4,6 +4,7 @@ import { login } from "../utils/requests";
 import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 
 export const Loader = () => (
   <div className="animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"></div>
@@ -96,6 +97,15 @@ const LoginForm: React.FC = () => {
         >
           {loading && <Loader />} Login
         </button>
+        <p className="text-center mt-4 text-gray-700">
+          Don't Have An Account?{" "}
+          <Link
+            href={`/registration/${uniqueId}/?redirect=login`}
+            className="text-blue-500"
+          >
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );

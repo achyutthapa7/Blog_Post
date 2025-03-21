@@ -4,6 +4,65 @@ const API_URL =
     ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION ||
       "https://blog-post-7dgh.onrender.com/"
     : process.env.NEXT_PUBLIC_API_URL_DEVELOPMENT;
+
+export const registration = async ({
+  firstName,
+  lastName,
+  email,
+  password,
+}: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}) => {
+  try {
+    const res = await axios.post(
+      `${API_URL}/auth/registration`,
+      {
+        firstName,
+        lastName,
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error: any) {
+    console.error("Error while registering:", error);
+    throw error;
+  }
+};
+
+export const verification = async (
+  emailAddress: string,
+  verificationCode: number
+) => {
+  try {
+    console.log(emailAddress, verificationCode);
+    const res = await axios.post(
+      `${API_URL}/auth/verification/?emailAddress=${emailAddress}`,
+      {
+        verificationCode,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Error while verifying email:", error);
+  }
+};
+
 export const login = async ({
   email,
   password,

@@ -42,12 +42,14 @@ interface IUser {
 interface USERSTATE {
   user: IUser | null;
   isAuthenticated: boolean | null;
+  isVerified: boolean | null;
   loading: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: USERSTATE = {
   user: null,
   isAuthenticated: false,
+  isVerified: false,
   loading: "idle",
 };
 
@@ -76,6 +78,7 @@ const userSlice = createSlice({
         state.loading = "succeeded";
         state.user = action.payload?.rootUser || null;
         state.isAuthenticated = action.payload?.isAuthenticated || false;
+        state.isVerified = action.payload?.isVerified || false;
       })
       .addCase(checkAuthStatus.rejected, (state, action) => {
         state.loading = "failed";

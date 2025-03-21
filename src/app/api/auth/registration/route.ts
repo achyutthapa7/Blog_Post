@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest) => {
     const { firstName, lastName, email, password } = body;
     const otp = Math.floor(Math.random() * 100000 + 899999);
     if (!firstName || !lastName || !email || !password) {
-      return Response.json(
+      return NextResponse.json(
         {
           message: "missing required field",
         },
@@ -20,11 +20,11 @@ export const POST = async (req: NextRequest) => {
     }
     const existingUser = await userModel.findOne({ email });
     if (existingUser)
-      return Response.json(
+      return NextResponse.json(
         {
           message: "email already exists",
         },
-        { status: 400 }
+        { status: 409 }
       );
     const newUser = new userModel({
       firstName,
@@ -39,10 +39,10 @@ export const POST = async (req: NextRequest) => {
       newUser.authTokenExpiry = null;
       await newUser.save();
     }
-    cookie.set("emailAddress", newUser.email, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24,
-    });
+    // cookie.set("emailAddress", newUser.email, {
+    //   httpOnly: true,
+    //   maxAge: 60 * 60 * 24,
+    // });
     sendMail(newUser.email, "mail sent", otp).catch(console.error);
     return NextResponse.json(
       {

@@ -8,7 +8,8 @@ export const POST = async (req: NextRequest) => {
     const cookie = await cookies();
     const body = await req.json();
     const { verificationCode } = body;
-    const emailAddress = cookie.get("emailAddress")?.value;
+    const emailAddress = req.nextUrl.searchParams.get("emailAddress");
+    // const emailAddress = cookie.get("emailAddress")?.value;
     if (!emailAddress) {
       return NextResponse.json(
         {
@@ -31,25 +32,26 @@ export const POST = async (req: NextRequest) => {
     if (verificationCode !== otp) {
       return NextResponse.json(
         { message: "Invalid verification code" },
-        { status: 400 }
+        { status: 409 }
       );
     }
     if (verificationCode === otp) {
       registeredUser.isVerified = true;
       await registeredUser.save();
-      req.cookies.set({
-        name: "emailAddress",
-        value: "",
-      });
+      // req.cookies.set({
+      //   name: "emailAddress",
+      //   value: "",
+      // });
     }
     return NextResponse.json(
       { message: "Verification successful" },
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error while verifying email:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 };

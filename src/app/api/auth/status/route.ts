@@ -50,7 +50,11 @@ export const GET = async (req: NextRequest) => {
       );
     }
 
-    return NextResponse.json({ isAuthenticated: true, rootUser });
+    return NextResponse.json({
+      isAuthenticated: true,
+      rootUser,
+      isVerified: rootUser.isVerified,
+    });
   } catch (error) {
     return NextResponse.json({ isAuthenticated: false });
   }
