@@ -27,6 +27,10 @@ const Verification = () => {
   }, [user, isVerified]);
 
   const handleVerification = async () => {
+    if (!code) {
+      toast.error("Please enter the verification code");
+      return;
+    }
     const res = await verification(emailAddress, Number(code));
     if (res?.status === 200) {
       toast.success("Email verification successfull!");
