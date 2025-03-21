@@ -43,7 +43,7 @@ export const POST = async (req: NextRequest) => {
     //   httpOnly: true,
     //   maxAge: 60 * 60 * 24,
     // });
-    sendMail(newUser.email, "mail sent", otp).catch(console.error);
+    await sendMail(newUser.email, "mail sent", otp).catch(console.error);
     return NextResponse.json(
       {
         message: "User created successfully",

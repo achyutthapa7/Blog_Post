@@ -12,7 +12,7 @@ export const PUT = async (
     const { emailAddress } = await params;
     const user = await userModel.findOne({ email: emailAddress });
     const otp = Math.floor(Math.random() * 100000 + 899999);
-    sendMail(emailAddress, "email resend", otp).catch(console.error);
+    await sendMail(emailAddress, "email resend", otp).catch(console.error);
     user.verificationCode = otp;
     user.verificationCodeExpiry = Date.now() + 1000 * 60 * 5;
     await user.save();
