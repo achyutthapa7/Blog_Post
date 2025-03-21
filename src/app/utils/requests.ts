@@ -63,6 +63,24 @@ export const verification = async (
   }
 };
 
+export const resendotp = async (emailAddress: string) => {
+  try {
+    const res = await axios.put(
+      `${API_URL}/resendotp/${emailAddress}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Error while resending OTP:", error);
+  }
+};
+
 export const login = async ({
   email,
   password,
