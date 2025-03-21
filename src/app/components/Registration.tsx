@@ -6,6 +6,7 @@ import { registration } from "../utils/requests";
 import { Loader } from "./Login";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const Registration = () => {
   const { user, isVerified } = useSelector((state: RootState) => state?.user);
@@ -68,6 +69,7 @@ const Registration = () => {
       const res = await registration(formData);
 
       if (res?.status === 201) {
+        toast.success("Registration successful! Please verify your email");
         router.push(`/verification/?emailAddress=${formData.email}`);
       } else if (res?.status === 409) {
         setError("Email already exists");
