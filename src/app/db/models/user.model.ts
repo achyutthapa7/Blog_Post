@@ -15,6 +15,7 @@ export interface IUser extends Document {
   followers: Types.ObjectId[];
   sentFollowRequest: Types.ObjectId[];
   receivedFollowRequest: Types.ObjectId[];
+  notifications: Types.ObjectId[];
 }
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -46,6 +47,13 @@ const userSchema = new mongoose.Schema<IUser>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        default: [],
+      },
+    ],
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
         default: [],
       },
     ],
