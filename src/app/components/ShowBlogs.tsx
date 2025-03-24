@@ -338,7 +338,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
           ) : (
             <PaperAirplaneIcon
               className="h-6 w-6 absolute right-3 top-[9px] text-blue-400 cursor-pointer hover:text-blue-500"
-              onClick={() => handleAddComment(blog._id.toString())}
+              onClick={() => handleAddComment(blog?._id.toString())}
             />
           )}
         </div>
@@ -351,7 +351,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
               <div
                 key={comment?._id.toString()}
                 className="flex items-center justify-between"
-                onMouseEnter={() => setHoveredCommentId(comment._id.toString())}
+                onMouseEnter={() => setHoveredCommentId(comment?._id.toString())}
                 onMouseLeave={() => setHoveredCommentId(null)}
               >
                 <div className="flex gap-2 items-center">
@@ -377,16 +377,16 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                 </div>
 
                 {/* Delete Button */}
-                {user && user._id.toString() === comment.userId._id && (
+                {user && user?._id.toString() === comment?.userId?._id && (
                   <div className="relative">
                     <span className="text-lg font-bold cursor-pointer">
                       ...
                     </span>
-                    {hoveredCommentId === comment._id.toString() && (
+                    {hoveredCommentId === comment?._id.toString() && (
                       <button
                         className="absolute right-0 bg-white border shadow-md p-2 rounded-lg text-red-500 hover:text-red-700 cursor-pointer"
                         onClick={() =>
-                          handleCommentDelete(blog._id, comment._id.toString())
+                          handleCommentDelete(blog?._id, comment?._id?.toString())
                         }
                       >
                         Delete
