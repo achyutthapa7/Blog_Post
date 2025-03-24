@@ -825,16 +825,27 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
             )}
           </div>
           <div className="flex-1 relative">
-            <input
+            <textarea
               id={`comment-input-${blog?._id}`}
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              type="text"
+              onChange={(e) => {
+                setComment(e.target.value);
+                // Auto-resize the textarea
+                e.target.style.height = "auto";
+                e.target.style.height = `${Math.min(
+                  e.target.scrollHeight,
+                  150
+                )}px`;
+              }}
               placeholder="Write a comment..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              onKeyUp={(e) =>
-                e.key === "Enter" && handleAddComment(blog?._id?.toString())
-              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none min-h-[40px] max-h-[150px] overflow-y-auto"
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAddComment(blog?._id?.toString());
+                }
+              }}
             />
             <button
               onClick={() => handleAddComment(blog?._id?.toString())}
@@ -880,7 +891,8 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                       <div className="flex justify-between items-start">
                         <div>
                           <span className="text-sm font-medium text-gray-900">
-                            {comment?.userId?.firstName} {comment?.userId?.lastName}
+                            {comment?.userId?.firstName}{" "}
+                            {comment?.userId?.lastName}
                           </span>
                           <span className="text-xs text-gray-500 ml-2">
                             {new Date(blog?.createdAt).toLocaleTimeString([], {
