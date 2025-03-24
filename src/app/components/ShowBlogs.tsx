@@ -361,7 +361,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                   <div>
                     <p>
                       <span className="text-lg text-blue-700 mr-4">
-                        {comment.userId.firstName}
+                        {comment.userId?.firstName}
                       </span>
                       <span className="text-black/30 font-extralight text-md">
                         {new Date(comment.createdAt).toLocaleTimeString([], {
