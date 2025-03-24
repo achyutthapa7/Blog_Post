@@ -790,7 +790,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
             <button
               className="flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors"
               onClick={() =>
-                document.getElementById(`comment-input-${blog._id}`)?.focus()
+                document.getElementById(`comment-input-${blog?._id}`)?.focus()
               }
             >
               <ChatBubbleLeftIcon className="h-5 w-5" />
@@ -826,7 +826,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
           </div>
           <div className="flex-1 relative">
             <input
-              id={`comment-input-${blog._id}`}
+              id={`comment-input-${blog?._id}`}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               type="text"
@@ -889,45 +889,47 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                             })}
                           </span>
                         </div>
-                        {user && user?._id.toString() === comment?.userId?._id && (
-                          <div className="relative">
-                            <button
-                              className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() =>
-                                setExpandedCommentId(
-                                  expandedCommentId === comment?._id.toString()
-                                    ? null
-                                    : comment?._id.toString()
-                                )
-                              }
-                            >
-                              <EllipsisVerticalIcon className="h-4 w-4" />
-                            </button>
-                            <AnimatePresence>
-                              {expandedCommentId?.toString() ===
-                                comment?._id.toString() && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute right-0 top-6 bg-white shadow-md rounded-md overflow-hidden z-10"
-                                >
-                                  <button
-                                    onClick={() =>
-                                      handleCommentDelete(
-                                        blog?._id,
-                                        comment?._id.toString()
-                                      )
-                                    }
-                                    className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left flex items-center"
+                        {user &&
+                          user?._id.toString() === comment?.userId?._id && (
+                            <div className="relative">
+                              <button
+                                className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() =>
+                                  setExpandedCommentId(
+                                    expandedCommentId ===
+                                      comment?._id.toString()
+                                      ? null
+                                      : comment?._id.toString()
+                                  )
+                                }
+                              >
+                                <EllipsisVerticalIcon className="h-4 w-4" />
+                              </button>
+                              <AnimatePresence>
+                                {expandedCommentId?.toString() ===
+                                  comment?._id.toString() && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute right-0 top-6 bg-white shadow-md rounded-md overflow-hidden z-10"
                                   >
-                                    Delete
-                                  </button>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        )}
+                                    <button
+                                      onClick={() =>
+                                        handleCommentDelete(
+                                          blog?._id,
+                                          comment?._id.toString()
+                                        )
+                                      }
+                                      className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left flex items-center"
+                                    >
+                                      Delete
+                                    </button>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          )}
                       </div>
                       <p className="text-sm text-gray-700 mt-1">
                         {comment.commentText}
