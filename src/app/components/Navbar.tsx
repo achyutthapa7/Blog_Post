@@ -10,8 +10,10 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../lib/store";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const { user } = useSelector((state: RootState) => state?.user);
 
   const uniqueId = uuidv4();
@@ -20,7 +22,6 @@ const Navbar = () => {
   const handleShowSearchBar = () => {
     setSearchBarOpen(!searchBarOpen);
   };
-
   return (
     <>
       <div className="px-5 h-[75px] flex justify-between items-center w-full border-b border-slate-200 sticky top-0 bg-slate-300/20 backdrop-blur-3xl shadow-md z-50">
@@ -62,7 +63,12 @@ const Navbar = () => {
           <div className="cursor-pointer">
             <BellIcon className="h-6 w-6 text-gray-500" />
           </div>
-          <div className="w-[35px] h-[35px] rounded-full bg-blue-800 flex items-center justify-center text-xl text-slate-200">
+          <div
+            className="w-[35px] h-[35px] rounded-full bg-blue-800 flex items-center justify-center text-xl text-slate-200 cursor-pointer"
+            onClick={() => {
+              router.push(`/users/profile/${uniqueId}/?userId=${user?._id}`);
+            }}
+          >
             {user?.firstName?.charAt(0).toUpperCase()}
           </div>
         </div>
