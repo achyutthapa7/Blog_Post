@@ -30,7 +30,7 @@ import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-
+import { v4 as uuidv4 } from "uuid";
 const SOCKET_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_SOCKET_URL_PRODUCTION
@@ -256,7 +256,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
       toast.error("Failed to unlike blog.");
     }
   };
-
+  const uniqueId = uuidv4();
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 h-auto border border-black/20 rounded-2xl mt-10 p-2 ">
       <div className="px-5">
@@ -266,8 +266,15 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
               {blog?.userId?.firstName?.[0]?.toUpperCase()}
               {blog?.userId?.lastName?.[0]?.toUpperCase()}
             </div>
-            <div className="flex flex-col">
-              <p className="font-medium">
+            <div
+              className="flex flex-col"
+              onClick={() =>
+                router.push(
+                  `/users/profile/${uniqueId}/?userId=${blog?.userId?._id}`
+                )
+              }
+            >
+              <p className="font-medium cursor-pointer">
                 {blog?.userId?.firstName} {blog?.userId?.lastName}
               </p>
               <p className="text-slate-400 font-extralight text-[0.9rem]">

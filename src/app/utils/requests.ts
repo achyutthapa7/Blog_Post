@@ -167,3 +167,14 @@ export const getBlogById = async (blogId: string) => {
     console.error("Error while fetching blog:", error);
   }
 };
+
+export const getUserById = async (userId: string) => {
+  try {
+    const res = await axios.get(`${API_URL}/user/getUserById/${userId}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error while fetching user:", error);
+  }
+};
