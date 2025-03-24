@@ -753,18 +753,14 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
             {blog?.title}
           </h2>
           <div className="prose max-w-none text-gray-700">
-            <ReactMarkdown>
-              {blog?.content.length > 300 && !showAllComments
-                ? `${blog.content.substring(0, 300)}...`
-                : blog.content}
-            </ReactMarkdown>
+            <ReactMarkdown>{blog.content.substring(0, 400)}</ReactMarkdown>
           </div>
           {blog?.content.length > 300 && (
             <button
               onClick={() => router.push(`/blogs/?blogId=${blog?._id}`)}
               className="text-blue-600 hover:text-blue-800 font-medium text-sm mt-2"
             >
-              {showAllComments ? "Show Less" : "Read Full Post"}
+              {"Read Full Post"}
             </button>
           )}
         </div>
