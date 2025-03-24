@@ -18,6 +18,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface Comment {
   _id: string;
+  userId: {
+    firstName: string;
+  };
   commentText: string;
   author: string;
 }
@@ -305,7 +308,9 @@ const ProfilePage: React.FC = () => {
                                             {comment.commentText}
                                           </p>
                                           <p className="text-xs text-gray-500 mt-1">
-                                            by {comment.author || "Anonymous"}
+                                            by{" "}
+                                            {comment?.userId?.firstName ||
+                                              "Anonymous"}
                                           </p>
                                         </div>
                                       </div>
