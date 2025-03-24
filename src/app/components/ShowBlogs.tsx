@@ -612,7 +612,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
       "bg-cyan-500",
     ];
     const index =
-      userId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      userId?.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
       colors.length;
     return colors[index];
   };
