@@ -871,8 +871,8 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                         comment?.userId?._id
                       )} flex items-center justify-center text-white text-xs font-semibold`}
                     >
-                      {comment.userId.firstName?.[0]?.toUpperCase()}
-                      {comment.userId.lastName?.[0]?.toUpperCase()}
+                      {comment?.userId?.firstName?.[0]?.toUpperCase()}
+                      {comment?.userId?.lastName?.[0]?.toUpperCase()}
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -880,7 +880,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                       <div className="flex justify-between items-start">
                         <div>
                           <span className="text-sm font-medium text-gray-900">
-                            {comment.userId.firstName} {comment.userId.lastName}
+                            {comment?.userId?.firstName} {comment?.userId?.lastName}
                           </span>
                           <span className="text-xs text-gray-500 ml-2">
                             {new Date(blog?.createdAt).toLocaleTimeString([], {
