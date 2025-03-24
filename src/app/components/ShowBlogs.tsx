@@ -577,9 +577,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
   const [isLiked, setIsLiked] = useState(
     blog?.likes?.some((id) => id.toString() === user?._id?.toString())
   );
-  const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
-    null
-  );
+  const [expandedCommentId, setExpandedCommentId] = useState<string>("");
   const uniqueId = uuidv4();
 
   useEffect(() => {
@@ -898,7 +896,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                                   setExpandedCommentId(
                                     expandedCommentId ===
                                       comment?._id.toString()
-                                      ? null
+                                      ? ""
                                       : comment?._id.toString()
                                   )
                                 }
