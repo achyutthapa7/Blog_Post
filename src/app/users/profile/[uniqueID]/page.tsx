@@ -15,7 +15,7 @@ import {
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
-
+import ReactMarkdown from "react-markdown";
 interface Comment {
   _id: string;
   userId: {
@@ -248,15 +248,15 @@ const ProfilePage: React.FC = () => {
                               )}
                             </button>
                           </div>
-
-                          <p
+                          <div
                             className={`mt-3 text-gray-600 ${
                               !expandedBlogs[blog._id] ? "line-clamp-3" : ""
                             }`}
                           >
-                            {blog.content}
-                          </p>
-
+                            <ReactMarkdown>
+                              {String(blog.content)}
+                            </ReactMarkdown>
+                          </div>
                           <div className="mt-4 flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                               <span className="inline-flex items-center text-sm text-gray-500">
