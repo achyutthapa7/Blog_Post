@@ -833,11 +833,11 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
               placeholder="Write a comment..."
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               onKeyUp={(e) =>
-                e.key === "Enter" && handleAddComment(blog._id.toString())
+                e.key === "Enter" && handleAddComment(blog?._id.toString())
               }
             />
             <button
-              onClick={() => handleAddComment(blog._id.toString())}
+              onClick={() => handleAddComment(blog?._id.toString())}
               disabled={isLoading}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800 disabled:text-gray-400"
             >
@@ -859,10 +859,10 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
             </h4>
 
             {blog.comments
-              .slice(0, showAllComments ? blog.comments.length : 3)
+              .slice(0, showAllComments ? blog?.comments.length : 3)
               .map((comment) => (
                 <div
-                  key={comment._id.toString()}
+                  key={comment?._id.toString()}
                   className="flex items-start gap-3 group"
                 >
                   <div className="flex-shrink-0">
@@ -889,7 +889,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                             })}
                           </span>
                         </div>
-                        {user && user._id.toString() === comment.userId._id && (
+                        {user && user?._id.toString() === comment?.userId?._id && (
                           <div className="relative">
                             <button
                               className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -897,7 +897,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                                 setExpandedCommentId(
                                   expandedCommentId === comment?._id.toString()
                                     ? null
-                                    : comment._id.toString()
+                                    : comment?._id.toString()
                                 )
                               }
                             >
@@ -905,7 +905,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                             </button>
                             <AnimatePresence>
                               {expandedCommentId?.toString() ===
-                                comment._id.toString() && (
+                                comment?._id.toString() && (
                                 <motion.div
                                   initial={{ opacity: 0, y: -10 }}
                                   animate={{ opacity: 1, y: 0 }}
@@ -915,8 +915,8 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
                                   <button
                                     onClick={() =>
                                       handleCommentDelete(
-                                        blog._id,
-                                        comment._id.toString()
+                                        blog?._id,
+                                        comment?._id.toString()
                                       )
                                     }
                                     className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left flex items-center"
