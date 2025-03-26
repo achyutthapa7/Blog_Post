@@ -2,7 +2,7 @@ import { IBlog } from "@/app/db/models/blog.model";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL =
+export const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL_PRODUCTION ||
       "https://blog-post-7dgh.onrender.com/"

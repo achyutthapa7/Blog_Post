@@ -1,6 +1,7 @@
 import { blogModel, IBlog } from "@/app/db/models/blog.model";
 import { commentModel } from "@/app/db/models/comment.model";
 import { userModel } from "@/app/db/models/user.model";
+import redis from "@/app/lib/redis";
 import { conn } from "@/app/utils/conn";
 import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest) => {
@@ -12,6 +13,11 @@ export const GET = async (req: NextRequest) => {
     const skip = (page - 1) * limit;
     const totalBlogs = await blogModel.countDocuments();
 
+    // const cachedBlogs = await redis.get("blogs");
+    // if (cachedBlogs) {
+    //   console.log("🚀 Serving from Redis cache");
+    //   return NextResponse.json(JSON.parse(cachedBlogs), { status: 200 });
+    // }
     const blogs = await blogModel
       .find<IBlog>({})
       .populate({
@@ -36,6 +42,12 @@ export const GET = async (req: NextRequest) => {
     if (blogs.length === 0) {
       return NextResponse.json({ message: "No blogs found" }, { status: 404 });
     }
+    // await redis.setex(
+    //   "blogs",
+    //   3600,
+    //   JSON.stringify({ blogs, totalBlogs, limit })
+    // );
+
     return NextResponse.json({ blogs, totalBlogs, limit }, { status: 200 });
   } catch (error) {
     console.error(error);

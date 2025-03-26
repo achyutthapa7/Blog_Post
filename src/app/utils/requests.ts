@@ -178,3 +178,33 @@ export const getUserById = async (userId: string) => {
     console.error("Error while fetching user:", error);
   }
 };
+
+export const readOneNotification = async (notificationId: string) => {
+  try {
+    const res = axios.put(
+      `${API_URL}/notifications/readOneNotification/${notificationId}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Error while updating notification:", error);
+  }
+};
+
+export const readAllNotifications = async () => {
+  try {
+    const res = axios.put(
+      `${API_URL}/notifications/readAllNotifications`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Error while updating all notifications:", error);
+  }
+};

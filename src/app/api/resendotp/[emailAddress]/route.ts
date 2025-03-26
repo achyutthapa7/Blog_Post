@@ -23,7 +23,7 @@ export const PUT = async (
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error resending otp:", error);
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 };

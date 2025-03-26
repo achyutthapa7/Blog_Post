@@ -41,5 +41,6 @@ export const config = {
     "/api/user/:path*",
     "/api/blogs/:path*",
     "/api/cron/:path*",
+    "/api/notifications/:path*",
   ],
 };
