@@ -71,6 +71,21 @@ const ShowBlogs = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 10
+      ) {
+        if (page * limit < totalBlogs) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [page, limit, totalBlogs]);
+
   if (loading === "idle" && blogs.length === 0) {
     return <Loader />;
   }
@@ -108,8 +123,9 @@ const ShowBlogs = () => {
                     <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <>
-                      Load More
-                      <ArrowDownIcon className="h-5 w-5" />
+                      <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+
+                      {/* <ArrowDownIcon className="h-5 w-5" /> */}
                     </>
                   )}
                 </button>

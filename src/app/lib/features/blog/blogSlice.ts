@@ -173,7 +173,7 @@ export const blogSlice = createSlice({
       .addCase(fetchBlog.fulfilled, (state, action) => {
         const { blogs, totalBlogs, limit } = action.payload;
         state.loading = "succeeded";
-        state.blogs = blogs;
+        state.blogs = [...state.blogs, ...blogs];
         state.totalBlogs = totalBlogs;
         state.limit = limit;
       })
