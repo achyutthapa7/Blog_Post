@@ -14,7 +14,6 @@ export const PUT = async (
     const { blogId } = await params;
     const rootUser = await userModel.findById(userId);
     const blog = await blogModel.findById(blogId);
-    const receiver = await userModel.findOne({ _id: blog.userId });
     if (blog.likes.includes(userId)) {
       return NextResponse.json(
         {
@@ -30,6 +29,7 @@ export const PUT = async (
         likes: userId,
       },
     });
+    let populatedNotification = null;
     if (rootUser._id.toString() !== blog.userId.toString()) {
       const newNotification = new notificationModel({
         senderId: userId,
@@ -39,12 +39,29 @@ export const PUT = async (
         } liked your blog`,
       });
       await newNotification.save();
-      receiver.notifications.push(newNotification);
-      await receiver.save();
+      const receiver = await userModel.findOne({ _id: blog.userId });
+      if (receiver) {
+        receiver.notifications.push(newNotification._id);
+        await receiver.save();
+      }
+      populatedNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("senderId", "firstName lastName")
+        .populate("receiverId", "firstName lastName")
+        .populate({
+          path: "blogId",
+          model: blogModel,
+          select: "title",
+        });
     }
 
     return NextResponse.json(
-      { userId, blogId, message: "Liked successfully" },
+      {
+        userId,
+        blogId,
+        newNotification: populatedNotification,
+        message: "Liked successfully",
+      },
       {
         status: 200,
       }

@@ -236,7 +236,6 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
     if (res) {
       socket.emit("add-comment", res.newComment);
       socket.emit("notification", res.newNotification);
-      console.log(res.newNotification.populatedNotification);
       setComment("");
     } else {
       toast.error("Failed to add comment.");
@@ -267,6 +266,7 @@ const BlogPost = ({ blog }: { blog: IBlog }) => {
         toast.error("Failed to like blog.");
       } else {
         socket.emit("like-blog", res);
+        socket.emit("notification", res.newNotification);
       }
     } catch (error) {
       setIsLiked(false);
