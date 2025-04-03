@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/app/ProtectedRoute";
-import { getUserById } from "@/app/utils/requests";
+import { getUserById, logout } from "@/app/utils/requests";
 import {
   UserCircleIcon,
   ChatBubbleLeftIcon,
@@ -16,6 +16,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { logoutUser } from "@/app/lib/features/user/userSlice";
+import { useDispatch } from "react-redux";
+
 interface Comment {
   _id: string;
   userId: {
@@ -46,7 +49,7 @@ const ProfilePage: React.FC = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,7 +105,17 @@ const ProfilePage: React.FC = () => {
       </ProtectedRoute>
     );
   }
-
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      const res = await logout();
+      if (res?.status === 200) {
+        dispatch(logoutUser());
+      } else {
+        console.error("Error while logging out:", res);
+      }
+    }
+  };
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -168,10 +181,20 @@ const ProfilePage: React.FC = () => {
                       <div className="absolute bottom-0 right-0 bg-green-500 rounded-full w-5 h-5 border-2 border-white"></div>
                     </div>
                     <div className="flex-1">
-                      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                        {user.firstName} {user.lastName}
-                      </h1>
-                      <p className="text-gray-600 mt-1">{user.email}</p>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                            {user.firstName} {user.lastName}
+                          </h1>
+                          <p className="text-gray-600 mt-1">{user.email}</p>
+                        </div>
+                        <button
+                          onClick={handleLogout}
+                          className="px-3 py-1 text-sm text-red-500 border border-red-200 hover:border-red-300 rounded-md transition-colors cursor-pointer hover:bg-red-500 hover:text-white"
+                        >
+                          Logout
+                        </button>
+                      </div>
                       <div className="mt-4 flex flex-wrap gap-2">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           {user.blogs.length}{" "}
@@ -280,7 +303,7 @@ const ProfilePage: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Comments Section - Only visible when expanded */}
+                        {/* Comments Section */}
                         <AnimatePresence>
                           {expandedBlogs[blog._id] &&
                             blog.comments.length > 0 && (
